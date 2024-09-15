@@ -1,0 +1,104 @@
+.Toastify__toast.toast {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-tertiary-main);
+
+  @apply p-3 rounded-[12px];
+}
+
+.Toastify__toast-body {
+  position: relative;
+  width: 100%;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.toast__body {
+  @apply relative flex w-full gap-3 pr-[12px];
+}
+
+.toast__icon-wrp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+
+  @apply size-16;
+
+  .Toastify__toast--success & {
+    background: var(--success-light);
+    color: var(--success-main);
+  }
+
+  .Toastify__toast--error & {
+    background: var(--error-light);
+    color: var(--error-main);
+  }
+
+  .Toastify__toast--warning & {
+    background: var(--warning-light);
+    color: var(--warning-main);
+  }
+
+  .Toastify__toast--info & {
+    background: var(--info-dark);
+    color: var(--background-secondary-main);
+  }
+}
+
+.toast .toast__icon {
+  @apply size-12;
+}
+
+.toast__details {
+  flex: 1;
+
+  @apply flex flex-col py-2 px-0;
+}
+
+.toast__title {
+  color: var(--text-primary-invert-main);
+
+  @apply text-[14px] tracking-[0.1px] font-medium leading-[1.5];
+}
+
+.toast__message {
+  color: var(--text-primary-invert-main);
+
+  @apply text-[14px] leading-[1.5] tracking-[0.25px] max-w-[230px] w-[220px] sm:w-full;
+
+  .transaction-toast__message-icon {
+    @apply inline align-baseline size-[0.9em] ml-2 translate-y-[2px];
+  }
+}
+
+.Toastify__close-button {
+  color: var(--text-primary-invert-main);
+
+  @apply absolute top-[45%] right-[12px] -translate-y-1/2 p-0 text-[28px] leading-[1];
+}
+
+.Toastify__progress-bar {
+  @apply h-[2px];
+
+  .Toastify__toast--success & {
+    background: var(--text-primary-invert-main);
+  }
+
+  .Toastify__toast--error & {
+    background: var(--text-primary-invert-main);
+  }
+
+  .Toastify__toast--warning & {
+    background: var(--text-primary-invert-main);
+  }
+
+  .Toastify__toast--info & {
+    background: var(--text-primary-invert-main);
+  }
+}

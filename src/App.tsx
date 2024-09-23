@@ -2,6 +2,7 @@ import { config } from '@config'
 import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'react-use'
 
+import { Web3ContextProvider } from '@/contexts/Web3Provider'
 import { ErrorHandler } from '@/helpers'
 import { useViewportSizes } from '@/hooks'
 import { AppRoutes } from '@/routes'
@@ -30,5 +31,9 @@ export function App() {
 
   if (!isAppInitialized) return <UiSpinner />
 
-  return <AppRoutes />
+  return (
+    <Web3ContextProvider>
+      <AppRoutes />
+    </Web3ContextProvider>
+  )
 }

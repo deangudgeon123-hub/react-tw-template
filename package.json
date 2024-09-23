@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@distributedlab/tools": "^1.0.0-rc.14",
+    "@tanstack/react-query": "^5.56.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "downshift": "^8.5.0",
@@ -36,7 +37,9 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^9.0.1",
-    "valtio": "^1.13.2"
+    "valtio": "^1.13.2",
+    "viem": "2.x",
+    "wagmi": "^2.12.11"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",

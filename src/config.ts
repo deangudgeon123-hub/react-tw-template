@@ -8,7 +8,7 @@ type Config = {
   LOG_LEVEL: LogLevelDesc
   BUILD_VERSION: string
 
-  DISCORD_LINK: string
+  erc20Token: `0x${string}`
 }
 
 export const config: Config = {
@@ -17,7 +17,7 @@ export const config: Config = {
   LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
 
-  DISCORD_LINK: import.meta.env.VITE_DISCORD_LINK,
+  erc20Token: '0x08BE00b659713E615795954B778dbacD1F14efEb',
 }
 
 /**

@@ -4,7 +4,15 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
 } from 'react'
+import {
+  Chain,
+  Client,
+  createPublicClient,
+  createWalletClient,
+  custom,
+} from 'viem'
 import {
   createConfig,
   http,
@@ -16,9 +24,28 @@ import {
 import { base, mainnet, sepolia } from 'wagmi/chains'
 import { metaMask } from 'wagmi/connectors'
 
-type Web3ProviderContext = {
-  address: string
-  chainId: number
+const queryClient = new QueryClient()
+
+export const config = createConfig({
+  chains: [mainnet, base, sepolia],
+  connectors: [metaMask()],
+  transports: {
+    [mainnet.id]: http(),
+    [base.id]: http(),
+    [sepolia.id]: http(),
+  },
+})
+
+const fallbackClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+export type Web3ProviderContext = {
+  client: Client
+
+  address: `0x${string}` | ''
+  chain: Chain
   isConnected: boolean
 
   connect: () => void
@@ -26,8 +53,10 @@ type Web3ProviderContext = {
 }
 
 const web3ProviderContext = createContext<Web3ProviderContext>({
+  client: fallbackClient,
+
   address: '',
-  chainId: 0,
+  chain: fallbackClient.chain,
   isConnected: false,
 
   connect: () => {},
@@ -37,18 +66,6 @@ const web3ProviderContext = createContext<Web3ProviderContext>({
 export const useWeb3Context = () => {
   return useContext(web3ProviderContext)
 }
-
-const queryClient = new QueryClient()
-
-const config = createConfig({
-  chains: [mainnet, base, sepolia],
-  connectors: [metaMask()],
-  transports: {
-    [mainnet.id]: http(),
-    [base.id]: http(),
-    [sepolia.id]: http(),
-  },
-})
 
 export const Web3ContextProvider = (props: PropsWithChildren) => {
   return (
@@ -65,19 +82,33 @@ export const Web3ContextProvider = (props: PropsWithChildren) => {
 const Web3ContextProviderContent = (props: PropsWithChildren) => {
   const connectManager = useConnect()
 
-  const { address, chainId, isConnected } = useAccount()
+  const account = useAccount()
   const { disconnect } = useDisconnect()
 
   const connect = useCallback(async () => {
     connectManager.connect({ connector: connectManager.connectors[0] })
   }, [connectManager])
 
+  const client = useMemo(() => {
+    if (!account.address) {
+      return fallbackClient
+    }
+
+    return createWalletClient({
+      account: account.address,
+      chain: sepolia,
+      transport: custom(window?.ethereum),
+    })
+  }, [account.address])
+
   return (
     <web3ProviderContext.Provider
       value={{
-        address: address ?? '',
-        chainId: chainId ?? -1,
-        isConnected,
+        client: client,
+
+        address: account.address ?? '',
+        chain: account.chain ?? fallbackClient.chain,
+        isConnected: account.isConnected,
 
         connect,
         disconnect,

@@ -1,48 +1,58 @@
 import { config } from '@config'
-import { useCallback, useEffect, useState } from 'react'
-import { formatEther, parseEther } from 'viem'
+import { useCallback, useEffect, useMemo } from 'react'
+import { parseEther } from 'viem'
 
 import { useWeb3Context } from '@/contexts/Web3Provider'
-import { useErc20 } from '@/contexts/Web3Provider/contracts'
-import { bus, BusEvents, ErrorHandler } from '@/helpers'
+import { createErc20Contract } from '@/contexts/Web3Provider/contracts'
+import { getSignerOrProvider } from '@/contexts/Web3Provider/helpers/providers'
+import { ErrorHandler } from '@/helpers'
 
 export default function Erc20() {
-  const { address, chain } = useWeb3Context()
+  const { address, client } = useWeb3Context()
 
-  const erc20ContractInstance = useErc20(config.erc20Token)
+  const erc20Contract = useMemo(() => {
+    const jsonRpcSigner = getSignerOrProvider(client)
 
-  const [balance, setBalance] = useState('')
+    return createErc20Contract(config.erc20Token, jsonRpcSigner)
+  }, [client])
 
   const loadBalance = useCallback(async () => {
-    if (!address) return
+    // if (!address) return
 
-    const balanceResponse = await erc20ContractInstance.read.balanceOf([
-      address,
+    const [details, balance] = await Promise.all([
+      erc20Contract.loadDetails(),
+      erc20Contract.contractInstance.balanceOf(
+        '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
+      ),
     ])
-    console.log(balanceResponse)
 
-    setBalance(formatEther(balanceResponse))
-  }, [address, erc20ContractInstance])
+    // eslint-disable-next-line
+    console.log(details, balance)
+
+    // console.log(details, balance)
+    //
+    // if (!balance) return
+    //
+    // setBalance(formatEther(balance))
+  }, [erc20Contract])
 
   const transfer = useCallback(async () => {
     if (!address) throw new Error('no address')
 
     try {
-      const hash = await erc20ContractInstance.write.transfer(
-        ['0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C', parseEther('1')],
-        // FIXME: ain't want to pass this every time
-        {
-          account: address,
-          chain: chain,
-        },
+      const tx = await erc20Contract.contractInstance.transfer(
+        '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
+        parseEther('1'),
       )
-      bus.emit(BusEvents.Success, {
-        message: `tx sent, ${hash}`,
-      })
+
+      const receipt = await tx.wait()
+
+      // eslint-disable-next-line
+      console.log(receipt)
     } catch (error) {
       ErrorHandler.process(error)
     }
-  }, [erc20ContractInstance])
+  }, [address, erc20Contract.contractInstance])
 
   useEffect(() => {
     loadBalance()
@@ -52,8 +62,6 @@ export default function Erc20() {
 
   return (
     <div className='flex'>
-      <span className='m-4'>{balance}</span>
-      <br />
       <button onClick={transfer}>transfer</button>
     </div>
   )

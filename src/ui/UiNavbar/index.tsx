@@ -6,7 +6,7 @@ import { cn } from '@/theme/utils'
 import { UiLogo } from '@/ui'
 
 export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
-  const { address, chainId, connect } = useWeb3Context()
+  const { address, chain, connect } = useWeb3Context()
 
   const tryConnect = useCallback(() => {
     try {
@@ -31,7 +31,7 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
         )}
       </div>
 
-      <span className=''>chainID: {chainId}</span>
+      <span className=''>chainID: {chain.id}</span>
     </div>
   )
 }

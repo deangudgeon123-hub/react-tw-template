@@ -7,11 +7,13 @@ import {
   useMemo,
 } from 'react'
 import {
+  type Account,
   Chain,
   Client,
   createPublicClient,
   createWalletClient,
   custom,
+  type Transport,
 } from 'viem'
 import {
   createConfig,
@@ -21,28 +23,29 @@ import {
   useDisconnect,
   WagmiProvider,
 } from 'wagmi'
-import { base, mainnet, sepolia } from 'wagmi/chains'
+import { base, sepolia } from 'wagmi/chains'
 import { metaMask } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
 export const config = createConfig({
-  chains: [mainnet, base, sepolia],
+  chains: [base, sepolia],
   connectors: [metaMask()],
   transports: {
-    [mainnet.id]: http(),
     [base.id]: http(),
     [sepolia.id]: http(),
   },
 })
 
 const fallbackClient = createPublicClient({
-  chain: mainnet,
+  chain: sepolia,
   transport: http(),
 })
 
-export type Web3ProviderContext = {
-  client: Client
+export type Web3ProviderContext<
+  A extends Account | undefined = Account | undefined,
+> = {
+  client: Client<Transport, Chain, A>
 
   address: `0x${string}` | ''
   chain: Chain
@@ -90,21 +93,21 @@ const Web3ContextProviderContent = (props: PropsWithChildren) => {
   }, [connectManager])
 
   const client = useMemo(() => {
-    if (!account.address) {
+    if (!account.chain) {
       return fallbackClient
     }
 
     return createWalletClient({
       account: account.address,
-      chain: sepolia,
-      transport: custom(window?.ethereum),
+      chain: account.chain ?? fallbackClient.chain,
+      transport: custom(window.ethereum), // FIXME
     })
-  }, [account.address])
+  }, [account.address, account.chain])
 
   return (
     <web3ProviderContext.Provider
       value={{
-        client: client,
+        client: client!,
 
         address: account.address ?? '',
         chain: account.chain ?? fallbackClient.chain,

@@ -14,7 +14,8 @@
     "lint:styles": "stylelint \"src/**/*.{css,sass,scss}\" --max-warnings=0",
     "lint:scripts": "eslint \"{src,config}/**/*.{js,ts,jsx,tsx}\" --cache --fix --max-warnings=0 && tsc --noEmit",
     "preview": "vite preview",
-    "rsc": "node scripts/release-sanity-check.mjs"
+    "rsc": "node scripts/release-sanity-check.mjs",
+    "generate:ethers-types": "typechain --target=ethers-v6 'abis/**/*.json' --out-dir src/contexts/Web3Provider/types"
   },
   "dependencies": {
     "@distributedlab/tools": "^1.0.0-rc.14",
@@ -22,6 +23,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "downshift": "^8.5.0",
+    "ethers": "^6.13.2",
     "framer-motion": "^10.18.0",
     "i18next": "^23.10.1",
     "lodash": "^4.17.21",
@@ -44,6 +46,7 @@
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@typechain/ethers-v6": "^0.5.1",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.5",
     "@types/react": "^18.2.74",
@@ -75,6 +78,7 @@
     "stylelint-declaration-strict-value": "^1.10.4",
     "stylelint-scss": "^6.2.1",
     "tailwindcss": "^3.4.3",
+    "typechain": "^8.3.2",
     "typescript": "^5.4.4",
     "vite": "^5.2.8",
     "vite-plugin-checker": "^0.6.4",

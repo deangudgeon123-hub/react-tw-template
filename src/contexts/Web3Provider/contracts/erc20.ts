@@ -1,16 +1,38 @@
-import { getContract } from 'viem'
+import { AbstractProvider, AbstractSigner } from 'ethers'
 
-import { erc20Abi } from '@/abis'
-import { useWeb3Context } from '@/contexts/Web3Provider'
+import { createContract } from '@/contexts/Web3Provider/helpers/contracts'
+import { Erc20__factory } from '@/contexts/Web3Provider/types'
 
-export const useErc20 = (address: `0x${string}`) => {
-  const { client } = useWeb3Context()
+export function createErc20Contract(
+  address: string,
+  provider: AbstractProvider | AbstractSigner,
+) {
+  const { contractInstance, contractInterface } = createContract(
+    address,
+    provider,
+    Erc20__factory,
+  )
 
-  const instance = getContract({
-    address: address,
-    abi: erc20Abi,
-    client: client,
-  })
+  return {
+    contractInstance,
+    contractInterface,
 
-  return instance
+    loadDetails: async () => {
+      const [decimals, name, owner, symbol, totalSupply] = await Promise.all([
+        contractInstance.decimals(),
+        contractInstance.name(),
+        contractInstance.owner(),
+        contractInstance.symbol(),
+        contractInstance.totalSupply(),
+      ])
+
+      return {
+        decimals,
+        name,
+        owner,
+        symbol,
+        totalSupply,
+      }
+    },
+  }
 }

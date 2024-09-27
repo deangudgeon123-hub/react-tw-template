@@ -24,13 +24,13 @@ import {
   WagmiProvider,
 } from 'wagmi'
 import { base, sepolia } from 'wagmi/chains'
-import { metaMask } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
 export const config = createConfig({
   chains: [base, sepolia],
-  connectors: [metaMask()],
+  connectors: [injected()],
   transports: {
     [base.id]: http(),
     [sepolia.id]: http(),

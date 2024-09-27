@@ -1,31 +1,32 @@
 import { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
-import {
-  animation,
-  borderRadius,
-  colors,
-  fontFamily,
-  fontSize,
-  keyframes,
-  screens,
-  spacing,
-} from './src/theme/config'
+import { colors, cssVars, fontFamily, typography } from './src/theme/config'
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors,
-      fontSize,
       fontFamily,
-      borderRadius,
-      screens,
-      spacing,
-      keyframes,
-      animation,
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addBase }) =>
+      addBase({
+        ':root': {
+          ...cssVars.light,
+        },
+        '.dark:root': {
+          ...cssVars.dark,
+        },
+      }),
+    ),
+
+    plugin(({ addUtilities }) => {
+      addUtilities(typography)
+    }),
+  ],
 }
 
 export default config

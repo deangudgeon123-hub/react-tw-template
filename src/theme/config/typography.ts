@@ -1,66 +1,126 @@
-import { ThemeConfig } from 'tailwindcss/types/config'
+import type { ThemeConfig } from 'tailwindcss/types/config'
 
-export const fontSize: ThemeConfig['fontSize'] = {
-  h1: ['36px', { lineHeight: '48px', fontWeight: '400' }],
-  h2: ['60px', { lineHeight: '66px', fontWeight: '700' }], // not configured
-  h3: ['28px', { lineHeight: '28px', fontWeight: '700' }],
-  h4: ['32px', { lineHeight: '40px', fontWeight: '700' }], // not configured
-  h5: ['24px', { lineHeight: '30px', fontWeight: '700' }], // not configured
-  h6: ['20px', { lineHeight: '26px', fontWeight: '700' }], // not configured
-
-  subtitle1: ['20px', { lineHeight: '20px', fontWeight: '500' }],
-  subtitle2: ['20px', { lineHeight: '26px', fontWeight: '600' }], // not configured
-  subtitle3: ['16px', { lineHeight: '20px', fontWeight: '600' }], // not configured
-  subtitle4: ['14px', { lineHeight: '18px', fontWeight: '600' }], // not configured
-
-  body1: [
-    '20px',
-    { lineHeight: '26px', fontWeight: '400', letterSpacing: '0.02em' },
-  ],
-  body2: [
-    '14px',
-    { lineHeight: '18px', fontWeight: '400', letterSpacing: '0.02em' },
-  ],
-  // not configured
-  body3: [
-    '14px',
-    { lineHeight: '18px', fontWeight: '400', letterSpacing: '0.02em' },
-  ],
-
-  // not configured
-  overline1: [
-    '14px',
-    { lineHeight: '18px', fontWeight: '700', letterSpacing: '0.04em' },
-  ],
-  // not configured
-  overline2: [
-    '12px',
-    { lineHeight: '16px', fontWeight: '700', letterSpacing: '0.04em' },
-  ],
-  // not configured
-  caption1: ['14px', { lineHeight: '18px', fontWeight: '400' }],
-
-  // not configured
-  'button-medium': ['14px', { lineHeight: '18px', fontWeight: '500' }],
-  // not configured
-  'button-large': ['16px', { lineHeight: '20px', fontWeight: '500' }],
-
-  // raw
-  'sm-normal': ['14px', { lineHeight: '18px', fontWeight: '400' }],
-  // not configured
-  'lg-medium': [
-    '20px',
-    { lineHeight: '26px', fontWeight: '500', letterSpacing: '0.02em' },
-  ],
-  // not configured
-  'md-medium': [
-    '18px',
-    { lineHeight: '26px', fontWeight: '500', letterSpacing: '0.02em' },
-  ],
-}
-
+// TODO: implement real fonts
 export const fontFamily: ThemeConfig['fontFamily'] = {
   primary: 'Roboto Mono',
   secondary: 'Oxygen Mono',
   tertiary: 'Roboto Slab',
+}
+
+export const typography = {
+  '.typography-h1': {
+    fontSize: '96px',
+    lineHeight: '96px',
+    fontWeight: '700',
+  },
+  '.typography-h2': { fontSize: '64px', lineHeight: '70px', fontWeight: '700' },
+  '.typography-h3': { fontSize: '48px', lineHeight: '56px', fontWeight: '700' },
+  '.typography-h4': { fontSize: '32px', lineHeight: '40px', fontWeight: '700' },
+  '.typography-h5': { fontSize: '24px', lineHeight: '30px', fontWeight: '700' },
+  '.typography-h6': { fontSize: '20px', lineHeight: '24px', fontWeight: '700' },
+
+  '.typography-subtitle1': {
+    fontSize: '24px',
+    lineHeight: '30px',
+    fontWeight: '600',
+  },
+  '.typography-subtitle2': {
+    fontSize: '20px',
+    lineHeight: '24px',
+    fontWeight: '600',
+  },
+  '.typography-subtitle3': {
+    fontSize: '16px',
+    lineHeight: '20px',
+    fontWeight: '600',
+  },
+  '.typography-subtitle4': {
+    fontSize: '14px',
+    lineHeight: '18px',
+    fontWeight: '600',
+  },
+  '.typography-subtitle5': {
+    fontSize: '12px',
+    lineHeight: '16px',
+    fontWeight: '600',
+  },
+
+  '.typography-body1': {
+    fontSize: '20px',
+    lineHeight: '36px',
+    letterSpacing: '0.4',
+    fontWeight: '400',
+  },
+  '.typography-body2': {
+    fontSize: '16px',
+    lineHeight: '20px',
+    letterSpacing: '0.32',
+    fontWeight: '400',
+  },
+  '.typography-body3': {
+    fontSize: '14px',
+    lineHeight: '20px',
+    letterSpacing: '0.28',
+    fontWeight: '400',
+  },
+  '.typography-body4': {
+    fontSize: '12px',
+    lineHeight: '16px',
+    letterSpacing: '0.24',
+    fontWeight: '400',
+  },
+
+  '.typography-buttonLarge': {
+    fontSize: '16px',
+    lineHeight: '20px',
+    letterSpacing: '0.32',
+    fontWeight: '600',
+  },
+  '.typography-buttonMedium': {
+    fontSize: '14px',
+    lineHeight: '18px',
+    letterSpacing: '0.28',
+    fontWeight: '600',
+  },
+  '.typography-buttonSmall': {
+    fontSize: '12px',
+    lineHeight: '14px',
+    letterSpacing: '0.24',
+    fontWeight: '600',
+  },
+
+  '.typography-caption1': {
+    fontSize: '14px',
+    lineHeight: '18px',
+    fontWeight: '500',
+  },
+  '.typography-caption2': {
+    fontSize: '12px',
+    lineHeight: '16px',
+    fontWeight: '500',
+  },
+  '.typography-caption3': {
+    fontSize: '10px',
+    lineHeight: '12px',
+    fontWeight: '500',
+  },
+
+  '.typography-overline1': {
+    fontSize: '14px',
+    lineHeight: '18px',
+    fontWeight: '700',
+    letterSpacing: '0.56',
+  },
+  '.typography-overline2': {
+    fontSize: '12px',
+    lineHeight: '16px',
+    fontWeight: '700',
+    letterSpacing: '0.48',
+  },
+  '.typography-overline3': {
+    fontSize: '10px',
+    lineHeight: '12px',
+    fontWeight: '700',
+    letterSpacing: '0.4',
+  },
 }

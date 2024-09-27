@@ -1,5 +1,5 @@
 {
-  "name": "react-rn-template",
+  "name": "react-tw-template",
   "private": true,
   "version": "0.0.0",
   "gitHooks": {
@@ -11,7 +11,7 @@
     "start": "vite",
     "analyze": "vite build --mode analyze",
     "lint": "yarn lint:scripts",
-    "lint:scripts": "eslint \"{src,config}/**/*.{js,ts,jsx,tsx}\" --cache --fix --max-warnings=0 && tsc --noEmit",
+    "lint:scripts": "eslint \"{src,config}/**/*.{js,ts,jsx,tsx}\" --cache --cache-location 'node_modules/.cache/.eslintcache' --fix --max-warnings=0 && tsc --noEmit",
     "preview": "vite preview",
     "rsc": "node scripts/release-sanity-check.mjs",
     "generate:ethers-types": "typechain --target=ethers-v6 'abis/**/*.json' --out-dir src/contexts/Web3Provider/types"

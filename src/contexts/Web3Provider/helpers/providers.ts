@@ -37,13 +37,16 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 
 export function getSignerOrProvider<
   A extends Account | undefined = Account | undefined,
->(client: Client<Transport, Chain, A>) {
-  if ('account' in client) {
-    // FIXME
-    // eslint-disable-next-line
-    // @ts-ignore
-    return clientToSigner(client)
+>(
+  client: Client<Transport, Chain, A>,
+): A extends Account ? JsonRpcSigner : JsonRpcProvider {
+  if (client.account) {
+    return clientToSigner(
+      client as Client<Transport, Chain, Account>,
+    ) as A extends Account ? JsonRpcSigner : JsonRpcProvider
   }
 
-  return clientToProvider(client)
+  return clientToProvider(client) as A extends Account
+    ? JsonRpcSigner
+    : JsonRpcProvider
 }

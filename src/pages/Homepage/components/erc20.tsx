@@ -11,9 +11,9 @@ export default function Erc20() {
   const { address, client } = useWeb3Context()
 
   const erc20Contract = useMemo(() => {
-    const jsonRpcSigner = getSignerOrProvider(client)
+    const jsonRpcSignerOrProvider = getSignerOrProvider(client)
 
-    return createErc20Contract(config.erc20Token, jsonRpcSigner)
+    return createErc20Contract(config.erc20Token, jsonRpcSignerOrProvider)
   }, [client])
 
   const loadBalance = useCallback(async () => {

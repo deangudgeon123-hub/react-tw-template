@@ -8,8 +8,8 @@ import {
 } from 'react'
 import {
   type Account,
-  Chain,
-  Client,
+  type Chain,
+  type Client,
   createPublicClient,
   createWalletClient,
   custom,

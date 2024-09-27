@@ -6,7 +6,7 @@ import { cn } from '@/theme/utils'
 import { UiLogo } from '@/ui'
 
 export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
-  const { address, chain, connect } = useWeb3Context()
+  const { address, chain, connect, disconnect } = useWeb3Context()
 
   const tryConnect = useCallback(() => {
     try {
@@ -16,6 +16,14 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
     }
   }, [connect])
 
+  const tryDisconnect = useCallback(() => {
+    try {
+      disconnect()
+    } catch (error) {
+      ErrorHandler.process(error)
+    }
+  }, [disconnect])
+
   return (
     <div
       {...rest}
@@ -24,9 +32,15 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
       <UiLogo className='mr-auto' />
 
       <div className='flex gap-4 items-center'>
-        {address || (
+        {address ? (
+          <div className={'flex gap-4'}>
+            {address}
+
+            <button onClick={tryDisconnect}>Disconnect</button>
+          </div>
+        ) : (
           <button className='' onClick={tryConnect}>
-            connect
+            Connect
           </button>
         )}
       </div>

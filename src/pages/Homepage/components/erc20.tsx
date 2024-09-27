@@ -11,6 +11,8 @@ export default function Erc20() {
   const { address, client } = useWeb3Context()
 
   const erc20Contract = useMemo(() => {
+    if (!client) return undefined
+
     const jsonRpcSignerOrProvider = getSignerOrProvider(client)
 
     return createErc20Contract(config.erc20Token, jsonRpcSignerOrProvider)
@@ -20,8 +22,8 @@ export default function Erc20() {
     // if (!address) return
 
     const [details, balance] = await Promise.all([
-      erc20Contract.loadDetails(),
-      erc20Contract.contractInstance.balanceOf(
+      erc20Contract?.loadDetails(),
+      erc20Contract?.contractInstance.balanceOf(
         '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
       ),
     ])
@@ -40,19 +42,19 @@ export default function Erc20() {
     if (!address) throw new Error('no address')
 
     try {
-      const tx = await erc20Contract.contractInstance.transfer(
+      const tx = await erc20Contract?.contractInstance.transfer(
         '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
         parseEther('1'),
       )
 
-      const receipt = await tx.wait()
+      const receipt = await tx?.wait()
 
       // eslint-disable-next-line
       console.log(receipt)
     } catch (error) {
       ErrorHandler.process(error)
     }
-  }, [address, erc20Contract.contractInstance])
+  }, [address, erc20Contract?.contractInstance])
 
   useEffect(() => {
     loadBalance()

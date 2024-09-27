@@ -1,12 +1,17 @@
 import { config } from '@config'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { parseEther } from 'viem'
+import { waitForTransactionReceipt } from 'viem/actions'
 
 import { useWeb3Context } from '@/contexts/Web3Provider'
-import { createErc20Contract } from '@/contexts/Web3Provider/contracts'
+import {
+  createErc20Contract,
+  createErc20ContractInstance,
+} from '@/contexts/Web3Provider/contracts'
 import { getSignerOrProvider } from '@/contexts/Web3Provider/helpers/providers'
 import { ErrorHandler } from '@/helpers'
 
+/* eslint-disable no-console */
 export default function Erc20() {
   const { address, client } = useWeb3Context()
 
@@ -18,28 +23,39 @@ export default function Erc20() {
     return createErc20Contract(config.erc20Token, jsonRpcSignerOrProvider)
   }, [client])
 
-  const loadBalance = useCallback(async () => {
+  const erc20ContractInstance = useMemo(() => {
+    if (!client) return undefined
+
+    return createErc20ContractInstance(config.erc20Token, client)
+  }, [client])
+
+  const loadDetailsByEthers = useCallback(async () => {
+    console.time('ethers')
     // if (!address) return
 
-    const [details, balance] = await Promise.all([
-      erc20Contract?.loadDetails(),
-      erc20Contract?.contractInstance.balanceOf(
-        '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
-      ),
-    ])
+    const balance = await erc20Contract?.contractInstance.balanceOf(
+      '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
+    )
 
-    // eslint-disable-next-line
-    console.log(details, balance)
-
-    // console.log(details, balance)
-    //
-    // if (!balance) return
-    //
-    // setBalance(formatEther(balance))
+    console.log(balance)
+    console.timeEnd('ethers')
   }, [erc20Contract])
 
-  const transfer = useCallback(async () => {
+  const loadDetailsByViem = useCallback(async () => {
+    console.time('viem')
+    // if (!address) return
+
+    const viemBalance = await erc20ContractInstance?.read.balanceOf([
+      '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
+    ])
+    console.log('balance', viemBalance)
+    console.timeEnd('viem')
+  }, [erc20ContractInstance?.read])
+
+  const transferByEthers = useCallback(async () => {
     if (!address) throw new Error('no address')
+
+    console.time('ethers transfer')
 
     try {
       const tx = await erc20Contract?.contractInstance.transfer(
@@ -49,22 +65,42 @@ export default function Erc20() {
 
       const receipt = await tx?.wait()
 
-      // eslint-disable-next-line
       console.log(receipt)
     } catch (error) {
       ErrorHandler.process(error)
     }
+    console.timeEnd('ethers transfer')
   }, [address, erc20Contract?.contractInstance])
 
-  useEffect(() => {
-    loadBalance()
+  const transferByViem = useCallback(async () => {
+    if (!address) throw new Error('no address')
 
-    // eslint-disable-next-line
-  }, [])
+    console.time('viem transfer')
+
+    try {
+      const hash = await erc20ContractInstance?.write.transfer([
+        '0x22CE5fa2c98148E56b5d7e6c927811AF30B8eD9C',
+        parseEther('1'),
+      ])
+
+      if (!hash) throw new Error('no hash')
+
+      const receipt = await waitForTransactionReceipt(client, { hash })
+
+      console.log(receipt)
+    } catch (error) {
+      ErrorHandler.process(error)
+    }
+    console.timeEnd('viem transfer')
+  }, [address, client, erc20ContractInstance?.write])
 
   return (
-    <div className='flex'>
-      <button onClick={transfer}>transfer</button>
+    <div className='flex flex-col gap-4 items-start'>
+      <button onClick={loadDetailsByEthers}>loadDetailsByEthers</button>
+      <button onClick={loadDetailsByViem}>loadDetailsByViem</button>
+
+      <button onClick={transferByEthers}>transferByEthers</button>
+      <button onClick={transferByViem}>transferByViem</button>
     </div>
   )
 }

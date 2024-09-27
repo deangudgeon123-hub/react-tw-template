@@ -1,13 +1,12 @@
+import { HTMLAttributes } from 'react'
+
 import { cn } from '@/theme/utils'
 
-export default function UiDivider() {
+export default function UiDivider(props: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('w-full')}>
-      <img
-        className={cn('object-center object-cover w-full')}
-        src='/images/divider.svg'
-        alt=''
-      />
-    </div>
+    <div
+      {...props}
+      className={cn('w-full bg-componentPrimary h-[1px]', props.className)}
+    />
   )
 }

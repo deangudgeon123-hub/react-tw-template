@@ -1,20 +1,29 @@
-import { HTMLAttributes, useCallback } from 'react'
+import { HTMLAttributes, useCallback, useState } from 'react'
+import { Connector } from 'wagmi'
 
 import { useWeb3Context } from '@/contexts/Web3Provider'
 import { ErrorHandler } from '@/helpers'
 import { cn } from '@/theme/utils'
-import { UiLogo } from '@/ui'
+import { UiCollapse, UiLogo } from '@/ui'
 
 export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
-  const { address, chain, connect, disconnect } = useWeb3Context()
+  const { connectManager, address, chain, connect, disconnect } =
+    useWeb3Context()
 
-  const tryConnect = useCallback(() => {
-    try {
-      connect()
-    } catch (error) {
-      ErrorHandler.process(error)
-    }
-  }, [connect])
+  const [isConnectorsListOpen, setIsConnectorsListOpen] = useState(false)
+
+  const tryConnect = useCallback(
+    (connector: Connector) => {
+      try {
+        connect(connector)
+      } catch (error) {
+        ErrorHandler.process(error)
+      }
+
+      setIsConnectorsListOpen(false)
+    },
+    [connect],
+  )
 
   const tryDisconnect = useCallback(() => {
     try {
@@ -31,7 +40,7 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
     >
       <UiLogo className='mr-auto' />
 
-      <div className='flex gap-4 items-center'>
+      <div className='flex gap-4 items-center relative'>
         {address ? (
           <div className={'flex gap-4'}>
             {address}
@@ -39,9 +48,29 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
             <button onClick={tryDisconnect}>Disconnect</button>
           </div>
         ) : (
-          <button className='' onClick={tryConnect}>
-            Connect
-          </button>
+          <>
+            <button
+              className=''
+              onClick={() => setIsConnectorsListOpen(prev => !prev)}
+            >
+              Connect
+            </button>
+
+            <UiCollapse
+              isOpen={isConnectorsListOpen}
+              className={
+                'absolute top-[100%] right-0 bg-componentDisabled p-4 rounded-2xl'
+              }
+            >
+              <div className='flex flex-col gap-4'>
+                {connectManager.connectors.map((connector, index) => (
+                  <button key={index} onClick={() => tryConnect(connector)}>
+                    {connector?.name}
+                  </button>
+                ))}
+              </div>
+            </UiCollapse>
+          </>
         )}
       </div>
 

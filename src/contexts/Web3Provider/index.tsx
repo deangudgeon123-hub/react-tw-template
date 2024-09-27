@@ -14,12 +14,14 @@ import {
   type Transport,
 } from 'viem'
 import {
+  Connector,
   createConfig,
   http,
   useAccount,
   useClient,
   useConnect,
   useConnectorClient,
+  UseConnectReturnType,
   useDisconnect,
   WagmiProvider,
 } from 'wagmi'
@@ -49,17 +51,20 @@ export const config = createConfig({
 export type Web3ProviderContext<
   A extends Account | undefined = Account | undefined,
 > = {
+  connectManager: UseConnectReturnType
+
   client: Client<Transport, Chain, A>
 
   address: `0x${string}` | ''
   chain: Chain
   isConnected: boolean
 
-  connect: () => void
+  connect: (connector: Connector) => void
   disconnect: () => void
 }
 
 const web3ProviderContext = createContext<Web3ProviderContext>({
+  connectManager: {} as UseConnectReturnType,
   client: fallbackClient,
 
   address: '',
@@ -92,9 +97,12 @@ const Web3ContextProviderContent = (props: PropsWithChildren) => {
   const account = useAccount()
   const { disconnect } = useDisconnect()
 
-  const connect = useCallback(async () => {
-    connectManager.connect({ connector: connectManager.connectors[0] })
-  }, [connectManager])
+  const connect = useCallback(
+    async (connector: Connector) => {
+      connectManager.connect({ connector })
+    },
+    [connectManager],
+  )
 
   const publicClient = useClient({ config })
 
@@ -111,6 +119,8 @@ const Web3ContextProviderContent = (props: PropsWithChildren) => {
   return (
     <web3ProviderContext.Provider
       value={{
+        connectManager,
+
         client: client,
 
         address: account.address ?? '',

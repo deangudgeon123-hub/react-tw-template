@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => {
           },
         }
       : {}),
-    publicDir: 'static',
     plugins: [
       react(),
       // Custom plugin to load markdown files

@@ -26,7 +26,7 @@ import {
   WagmiProvider,
 } from 'wagmi'
 import { base, sepolia } from 'wagmi/chains'
-import { walletConnect } from 'wagmi/connectors'
+// import { walletConnect } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
@@ -37,11 +37,11 @@ const fallbackClient = createPublicClient({
 
 export const config = createConfig({
   chains: [base, sepolia],
-  connectors: [
-    walletConnect({
-      projectId: '',
-    }),
-  ],
+  // connectors: [
+  //   walletConnect({
+  //     projectId: '',
+  //   }),
+  // ],
   transports: {
     [base.id]: http(),
     [sepolia.id]: http(),

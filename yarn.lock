@@ -9296,7 +9296,7 @@ __metadata:
     uuid: "npm:^9.0.1"
     valtio: "npm:^1.13.2"
     viem: "npm:2.x"
-    vite: "npm:^5.2.8"
+    vite: "npm:^5.4.8"
     vite-plugin-checker: "npm:^0.6.4"
     vite-plugin-svg-icons: "npm:^2.0.1"
     vite-tsconfig-paths: "npm:^4.3.2"
@@ -11590,7 +11590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.2.8":
+"vite@npm:^5.4.8":
   version: 5.4.8
   resolution: "vite@npm:5.4.8"
   dependencies:

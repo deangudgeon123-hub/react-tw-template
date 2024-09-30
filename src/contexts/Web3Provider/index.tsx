@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { switchChain } from '@wagmi/core'
 import {
   createContext,
   PropsWithChildren,
@@ -13,6 +14,7 @@ import {
   createPublicClient,
   type Transport,
 } from 'viem'
+import { base, mainnet, sepolia } from 'viem/chains'
 import {
   Connector,
   createConfig,
@@ -25,27 +27,35 @@ import {
   useDisconnect,
   WagmiProvider,
 } from 'wagmi'
-import { base, sepolia } from 'wagmi/chains'
 // import { walletConnect } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
-const fallbackClient = createPublicClient({
-  chain: sepolia,
-  transport: http(),
-})
-
 export const config = createConfig({
-  chains: [base, sepolia],
+  chains: [base, sepolia, mainnet],
   // connectors: [
   //   walletConnect({
   //     projectId: '',
+  //     relayUrl: 'wss://relay.walletconnect.com',
+  //     metadata: {
+  //       name: 'React App',
+  //       description: 'React App for WalletConnect',
+  //       url: 'https://walletconnect.com/',
+  //       icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  //     },
+  //     isNewChainsStale: true,
   //   }),
   // ],
   transports: {
     [base.id]: http(),
     [sepolia.id]: http(),
+    [mainnet.id]: http(),
   },
+})
+
+const fallbackClient = createPublicClient({
+  chain: base,
+  transport: http(),
 })
 
 export type Web3ProviderContext<
@@ -56,11 +66,17 @@ export type Web3ProviderContext<
   client: Client<Transport, Chain, A>
 
   address: `0x${string}` | ''
-  chain: Chain
+  chain: Chain | undefined
   isConnected: boolean
+
+  isRightNetwork: boolean
 
   connect: (connector: Connector) => void
   disconnect: () => void
+
+  safeSwitchChain: (
+    id: (typeof config)['chains'][number]['id'],
+  ) => Promise<void>
 }
 
 const web3ProviderContext = createContext<Web3ProviderContext>({
@@ -71,8 +87,12 @@ const web3ProviderContext = createContext<Web3ProviderContext>({
   chain: fallbackClient.chain,
   isConnected: false,
 
+  isRightNetwork: false,
+
   connect: () => {},
   disconnect: () => {},
+
+  safeSwitchChain: async () => {},
 })
 
 export const useWeb3Context = () => {
@@ -116,6 +136,17 @@ const Web3ContextProviderContent = (props: PropsWithChildren) => {
     return walletClient as Client<Transport, Chain, Account>
   }, [account.chain, publicClient, walletClient])
 
+  const isRightNetwork = useMemo((): boolean => {
+    return Boolean(client?.chain?.id)
+  }, [client?.chain?.id])
+
+  const safeSwitchChain = useCallback(
+    async (id: (typeof config)['chains'][number]['id']) => {
+      await switchChain(config, { chainId: id })
+    },
+    [],
+  )
+
   return (
     <web3ProviderContext.Provider
       value={{
@@ -124,11 +155,15 @@ const Web3ContextProviderContent = (props: PropsWithChildren) => {
         client: client,
 
         address: account.address ?? '',
-        chain: account.chain ?? fallbackClient.chain,
+        chain: client?.chain,
         isConnected: account.isConnected,
+
+        isRightNetwork,
 
         connect,
         disconnect,
+
+        safeSwitchChain,
       }}
     >
       {props.children}

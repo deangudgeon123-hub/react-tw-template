@@ -74,7 +74,7 @@ export default function UiNavbar({ ...rest }: HTMLAttributes<HTMLDivElement>) {
         )}
       </div>
 
-      <span className=''>chainID: {chain.id}</span>
+      <span className=''>chainID: {chain?.id}</span>
     </div>
   )
 }

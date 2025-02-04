@@ -95,7 +95,7 @@ export default function Erc20() {
   }, [address, client, erc20ContractInstance?.write])
 
   return (
-    <div className='flex flex-col gap-4 items-start'>
+    <div className='flex flex-col items-start gap-4'>
       <button onClick={loadDetailsByEthers}>loadDetailsByEthers</button>
       <button onClick={loadDetailsByViem}>loadDetailsByViem</button>
 

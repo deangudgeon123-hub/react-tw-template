@@ -60,8 +60,8 @@ export default defineConfig(({ mode }) => {
         },
         typescript: true,
         eslint: {
-          lintCommand:
-            'eslint "{src,config}/**/*.{jsx,tsx}" --cache --max-warnings=0',
+          useFlatConfig: true,
+          lintCommand: 'eslint "{src,config}/**/*.{js,ts,jsx,tsx}"',
         },
       }),
       ...(isAnalyze

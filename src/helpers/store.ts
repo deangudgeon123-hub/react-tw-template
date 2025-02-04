@@ -11,7 +11,7 @@ export const createStore = <S extends object, A>(
 
   try {
     parsedStorageState = JSON.parse(storageState!)
-  } catch (e) {
+  } catch (_) {
     /* empty */
   }
 

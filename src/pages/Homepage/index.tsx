@@ -12,7 +12,7 @@ export default function Homepage({ ...rest }: Props) {
 
   return (
     <motion.div {...rest}>
-      <UiContainer className={'gap-4 flex flex-col'}>
+      <UiContainer className={'flex flex-col gap-4'}>
         <Erc20 />
         <UiDivider />
         {state1}

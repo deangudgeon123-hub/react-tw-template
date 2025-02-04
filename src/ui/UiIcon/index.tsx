@@ -13,7 +13,7 @@ export default function UiIcon({ name, ...rest }: Props) {
       {...rest}
       className={cn(
         rest.className,
-        'flex items-center justify-center pointer-events-none',
+        'pointer-events-none flex items-center justify-center',
       )}
       aria-hidden='true'
     >

@@ -14,7 +14,7 @@ export default function UiLogo({ ...rest }: HTMLAttributes<HTMLDivElement>) {
         alt={config.APP_NAME}
       />
       <Link
-        className='absolute top-0 left-0 w-full h-full'
+        className='absolute left-0 top-0 h-full w-full'
         to={RoutePaths.Root}
       />
     </div>

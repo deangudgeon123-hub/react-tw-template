@@ -13,4 +13,5 @@
   "embeddedLanguageFormatting": "auto",
   "htmlWhitespaceSensitivity": "css",
   "jsxSingleQuote": true,
+  "plugins": ["prettier-plugin-tailwindcss"]
 }

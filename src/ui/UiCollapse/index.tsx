@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, MotionProps } from 'framer-motion'
+import { AnimatePresence, motion, type MotionProps } from 'motion/react'
 import { HTMLAttributes, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 

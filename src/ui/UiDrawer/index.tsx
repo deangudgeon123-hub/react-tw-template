@@ -1,6 +1,6 @@
 import './styles.scss'
 
-import { AnimatePresence, motion, MotionProps } from 'framer-motion'
+import { AnimatePresence, motion, MotionProps } from 'motion/react'
 import { HTMLAttributes, useEffect, useMemo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useClickAway } from 'react-use'

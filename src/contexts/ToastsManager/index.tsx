@@ -1,8 +1,6 @@
-import 'react-toastify/dist/ReactToastify.css'
-import './components/styles.scss'
-
 import {
   createContext,
+  HTMLAttributes,
   isValidElement,
   ReactNode,
   useCallback,
@@ -21,8 +19,8 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { IconNames } from '@/enums'
 import { bus, BusEvents } from '@/helpers'
-
-import { DefaultToast } from './components'
+import { cn } from '@/theme/utils'
+import { UiIcon } from '@/ui'
 
 const STATUS_MESSAGE_AUTO_HIDE_DURATION = 30 * 1000
 
@@ -167,8 +165,39 @@ export const ToastsManager = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const useToastsManager = () => {
-  return {
-    ...useContext(toastsManagerContext),
+function DefaultToast({
+  payload,
+  ...rest
+}: HTMLAttributes<HTMLDivElement> & {
+  payload: ToastPayload | ReactNode
+}) {
+  if (isValidElement(payload)) {
+    return <div {...rest}>{payload}</div>
   }
+
+  const msgPayload = payload as ToastPayload
+
+  return (
+    <div
+      {...rest}
+      className={cn('flex flex-col items-start gap-2', rest.className)}
+    >
+      <div className='flex items-center gap-2'>
+        <div
+          className={cn(
+            'flex size-8 items-center justify-center rounded-full bg-componentPrimary',
+          )}
+        >
+          <UiIcon
+            className='size-4 text-textPrimary'
+            name={msgPayload.iconName}
+          />
+        </div>
+        <span className='typography-subtitle3'>{msgPayload.title}</span>
+      </div>
+      <span className=''>{msgPayload.message}</span>
+    </div>
+  )
 }
+
+export const useToastsManager = () => useContext(toastsManagerContext)

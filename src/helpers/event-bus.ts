@@ -8,10 +8,10 @@ export enum BusEvents {
 }
 
 export type DefaultBusEventMap = {
-  [BusEvents.Success]: unknown
-  [BusEvents.Error]: unknown
-  [BusEvents.Warning]: unknown
-  [BusEvents.Info]: unknown
+  [BusEvents.Success]: string
+  [BusEvents.Error]: string
+  [BusEvents.Warning]: string
+  [BusEvents.Info]: string
 }
 
 export const bus = new EventEmitter<DefaultBusEventMap>()

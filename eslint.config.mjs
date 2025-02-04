@@ -153,6 +153,7 @@ export default tseslint.config(
       './*.js',
       '**/env.js',
       'src/contexts/Web3Provider/types',
+      'node_modules/',
     ],
   },
 )

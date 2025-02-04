@@ -6020,6 +6020,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globals@npm:^15.14.0":
+  version: 15.14.0
+  resolution: "globals@npm:15.14.0"
+  checksum: 039deb8648bd373b7940c15df9f96ab7508fe92b31bbd39cbd1c1a740bd26db12457aa3e5d211553b234f30e9b1db2fee3683012f543a01a6942c9062857facb
+  languageName: node
+  linkType: hard
+
 "globalthis@npm:^1.0.3, globalthis@npm:^1.0.4":
   version: 1.0.4
   resolution: "globalthis@npm:1.0.4"
@@ -9712,6 +9719,7 @@ __metadata:
     eslint-plugin-unused-imports: "npm:^4.1.4"
     ethers: "npm:^6.13.2"
     framer-motion: "npm:^10.18.0"
+    globals: "npm:^15.14.0"
     i18next: "npm:^23.10.1"
     lodash: "npm:^4.17.21"
     loglevel: "npm:^1.9.1"

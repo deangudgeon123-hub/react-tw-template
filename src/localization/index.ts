@@ -1,7 +1,9 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
-import resources from '@/localization/resources'
+import { resources } from '@/localization/resources'
+
+import { locale } from './utils'
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -9,10 +11,11 @@ declare module 'i18next' {
   }
 }
 
-const STORAGE_KEY = 'locale'
-const DEFAULT_LOCALE = 'en'
-
-const locale = localStorage?.getItem(STORAGE_KEY) ?? DEFAULT_LOCALE
+declare module 'react-i18next' {
+  interface CustomTypeOptions {
+    resources: (typeof resources)['en']
+  }
+}
 
 // for all options read: https://www.i18next.com/overview/configuration-options
 

@@ -8,7 +8,6 @@ import {
   useEffect,
   useMemo,
 } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   type Id,
   toast,
@@ -19,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { IconNames } from '@/enums'
 import { emitter } from '@/helpers/event-bus'
+import { useTranslate } from '@/localization/utils'
 import { cn } from '@/theme/utils'
 import UiIcon from '@/ui/UiIcon'
 
@@ -46,28 +46,28 @@ const toastsManagerContext = createContext<ToastsManagerContextValue>({
 const abortController = new AbortController()
 
 export const ToastsManager = ({ children }: { children: ReactNode }) => {
-  const { t } = useTranslation()
+  const { translate } = useTranslate()
 
   const defaultTitles = useMemo<Record<ToastTypes, string>>(
     () => ({
-      success: t('notifications.default-title-success'),
-      error: t('notifications.default-title-error'),
-      warning: t('notifications.default-title-warning'),
-      info: t('notifications.default-title-info'),
-      default: t('notifications.default-title-default'),
+      success: translate('notifications.default-title-success'),
+      error: translate('notifications.default-title-error'),
+      warning: translate('notifications.default-title-warning'),
+      info: translate('notifications.default-title-info'),
+      default: translate('notifications.default-title-default'),
     }),
-    [t],
+    [translate],
   )
 
   const defaultMessages = useMemo<Record<ToastTypes, string>>(
     () => ({
-      default: t('notifications.default-message-default'),
-      info: t('notifications.default-message-info'),
-      success: t('notifications.default-message-success'),
-      error: t('notifications.default-message-error'),
-      warning: t('notifications.default-message-warning'),
+      default: translate('notifications.default-message-default'),
+      info: translate('notifications.default-message-info'),
+      success: translate('notifications.default-message-success'),
+      error: translate('notifications.default-message-error'),
+      warning: translate('notifications.default-message-warning'),
     }),
-    [t],
+    [translate],
   )
 
   const defaultIconNames = useMemo<Record<ToastTypes, IconNames>>(

@@ -1,9 +1,11 @@
 import en from './resources/en.json'
 
-export default {
+export const resources = {
   en: {
     translation: {
       ...en,
     },
   },
 }
+
+export type Language = keyof typeof resources

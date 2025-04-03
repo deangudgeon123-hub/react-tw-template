@@ -18,8 +18,8 @@ export function App() {
 
   const init = useCallback(async () => {
     try {
-      if (config.APP_NAME) {
-        document.title = config.APP_NAME
+      if (config.VITE_APP_NAME) {
+        document.title = config.VITE_APP_NAME
       }
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)

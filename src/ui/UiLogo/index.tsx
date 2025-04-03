@@ -11,7 +11,7 @@ export default function UiLogo({ ...rest }: HTMLAttributes<HTMLDivElement>) {
       <img
         className={cn('w-[120px]')}
         src='/branding/logo.svg'
-        alt={config.APP_NAME}
+        alt={config.VITE_APP_NAME}
       />
       <Link
         className='absolute left-0 top-0 h-full w-full'

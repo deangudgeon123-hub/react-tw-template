@@ -26,7 +26,10 @@ export default function Erc20() {
   const erc20ContractInstance = useMemo(() => {
     if (!client) return undefined
 
-    return createErc20ContractInstance(config.erc20Token, client)
+    return createErc20ContractInstance(
+      config.erc20Token as `0x{string}`,
+      client,
+    )
   }, [client])
 
   const loadDetailsByEthers = useCallback(async () => {

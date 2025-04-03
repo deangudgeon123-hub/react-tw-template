@@ -18,7 +18,7 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 
 import { IconNames } from '@/enums'
-import { bus, BusEvents } from '@/helpers'
+import { emitter } from '@/helpers/event-bus'
 import { cn } from '@/theme/utils'
 import UiIcon from '@/ui/UiIcon'
 
@@ -42,6 +42,8 @@ const toastsManagerContext = createContext<ToastsManagerContextValue>({
   showToast: () => {},
   removeToast: () => {},
 })
+
+const abortController = new AbortController()
 
 export const ToastsManager = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation()
@@ -80,7 +82,10 @@ export const ToastsManager = ({ children }: { children: ReactNode }) => {
   )
 
   const showToast = useCallback(
-    (messageType: ToastTypes = 'info', payload?: ToastPayload | ReactNode) => {
+    (
+      messageType: ToastTypes = 'info',
+      payload?: Partial<ToastPayload> | ReactNode,
+    ) => {
       let content: ReactNode = null
 
       if (isValidElement(payload)) {
@@ -121,34 +126,37 @@ export const ToastsManager = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const showSuccessToast = useCallback(
-    (payload: unknown) => showToast('success', payload as ToastPayload),
+    (payload: Partial<ToastPayload>) => {
+      showToast('success', payload)
+    },
     [showToast],
   )
   const showWarningToast = useCallback(
-    (payload: unknown) => showToast('warning', payload as ToastPayload),
+    (payload: Partial<ToastPayload>) => {
+      showToast('warning', payload)
+    },
     [showToast],
   )
   const showErrorToast = useCallback(
-    (payload: unknown) => showToast('error', payload as ToastPayload),
+    (payload: Partial<ToastPayload>) => {
+      showToast('error', payload)
+    },
     [showToast],
   )
   const showInfoToast = useCallback(
-    (payload: unknown) => showToast('info', payload as ToastPayload),
+    (payload: Partial<ToastPayload>) => {
+      showToast('info', payload)
+    },
     [showToast],
   )
 
   useEffect(() => {
-    bus.on(BusEvents.Success, showSuccessToast)
-    bus.on(BusEvents.Warning, showWarningToast)
-    bus.on(BusEvents.Error, showErrorToast)
-    bus.on(BusEvents.Info, showInfoToast)
+    emitter.on('success', showSuccessToast)
+    emitter.on('warning', showWarningToast)
+    emitter.on('error', showErrorToast)
+    emitter.on('info', showInfoToast)
 
-    return () => {
-      bus.off(BusEvents.Success, showSuccessToast)
-      bus.off(BusEvents.Warning, showWarningToast)
-      bus.off(BusEvents.Error, showErrorToast)
-      bus.off(BusEvents.Info, showInfoToast)
-    }
+    return () => abortController.abort()
   }, [showErrorToast, showInfoToast, showSuccessToast, showWarningToast])
 
   return (

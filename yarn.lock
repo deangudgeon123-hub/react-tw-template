@@ -4412,6 +4412,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emittery@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "emittery@npm:1.1.0"
+  checksum: 645d4d7307b52c81bb2d2f9f320aa6a3c0225f53a4bfef2d337be8086df975746f7dd619f1dd7b2ffd4f2288103f28019e7b8567718677600e47507496d3af5f
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -9828,6 +9835,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     dotenv: "npm:^16.4.7"
     dotenv-cli: "npm:^8.0.0"
+    emittery: "npm:^1.1.0"
     eslint: "npm:^9.19.0"
     eslint-config-prettier: "npm:^10.0.1"
     eslint-import-resolver-typescript: "npm:^3.7.0"

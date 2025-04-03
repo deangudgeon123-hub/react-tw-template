@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react'
 
 import { useToastsManager } from '@/contexts'
 import { IconNames } from '@/enums'
-import { bus, BusEvents } from '@/helpers'
+import { emitter } from '@/helpers'
 import Erc20 from '@/pages/Homepage/components/erc20'
 import { sampleStore } from '@/store/sample'
 import UiIcon from '@/ui/UiIcon'
@@ -16,10 +16,10 @@ export default function Homepage({ ...rest }: Props) {
   const toastManager = useToastsManager()
 
   const testToasts = () => {
-    bus.emit(BusEvents.Success, 'Success')
-    bus.emit(BusEvents.Error, 'Error')
-    bus.emit(BusEvents.Warning, 'Warning')
-    bus.emit(BusEvents.Info, 'Info')
+    emitter.emit('success', { title: 'Success' })
+    emitter.emit('error', { title: 'Error' })
+    emitter.emit('warning', { title: 'Warning' })
+    emitter.emit('info', { title: 'Info' })
 
     toastManager.showToast(
       'success',

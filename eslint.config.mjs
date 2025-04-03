@@ -15,6 +15,8 @@ import stylisticTs from '@stylistic/eslint-plugin-ts'
 import stylisticJsx from '@stylistic/eslint-plugin-jsx'
 import unusedImports from 'eslint-plugin-unused-imports'
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
+import i18nJsonPlugin from 'eslint-plugin-i18n-json'
+import path from 'path'
 
 export default tseslint.config(
   // core
@@ -143,6 +145,45 @@ export default tseslint.config(
     ...eslintPluginPrettierRecommended,
     rules: {
       'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+    },
+  },
+
+  {
+    files: ['src/localization/resources/*.json'],
+    plugins: { 'i18n-json': i18nJsonPlugin },
+    processor: {
+      meta: { name: '.json' },
+      ...i18nJsonPlugin.processors['.json'],
+    },
+    rules: {
+      ...i18nJsonPlugin.configs.recommended.rules,
+      'i18n-json/valid-message-syntax': [
+        2,
+        {
+          syntax: path.resolve('./scripts/i18next-syntax-validation.cjs'),
+        },
+      ],
+      'i18n-json/valid-json': 2,
+      'i18n-json/sorted-keys': [
+        2,
+        {
+          order: 'asc',
+          indentSpaces: 2,
+        },
+      ],
+      'i18n-json/identical-keys': [
+        2,
+        {
+          filePath: path.resolve('./src/localization/resources/en.json'),
+        },
+      ],
+      'prettier/prettier': [
+        0,
+        {
+          singleQuote: true,
+          endOfLine: 'auto',
+        },
+      ],
     },
   },
 

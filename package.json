@@ -12,6 +12,8 @@
     "analyze": "vite build --mode analyze",
     "lint": "yarn lint:scripts",
     "lint:scripts": "eslint \"{src,config}/**/*.{js,ts,jsx,tsx}\" --cache --cache-location 'node_modules/.cache/.eslintcache' --fix --max-warnings=0",
+    "format": "prettier . --check --cache --cache-location='node_modules/.cache/.prettiercache'",
+    "format:fix": "prettier . --write --cache --cache-location='node_modules/.cache/.prettiercache' --log-level=warn",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
     "rsc": "node scripts/release-sanity-check.mjs",

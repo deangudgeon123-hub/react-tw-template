@@ -2,7 +2,7 @@
 
 import eslint from '@eslint/js'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import importPlugin from 'eslint-plugin-import'
+import * as importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactPlugin from 'eslint-plugin-react'
@@ -57,7 +57,7 @@ export default tseslint.config(
 
   // import plugins
   {
-    ...importPlugin.flatConfigs.recommended,
+    ...importPlugin.flatConfigs?.recommended,
     files: ['src/**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
@@ -74,7 +74,7 @@ export default tseslint.config(
       ],
     },
     plugins: {
-      import: importPlugin.flatConfigs.recommended.plugins.import,
+      import: importPlugin.flatConfigs?.recommended.plugins.import,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
     },
@@ -104,28 +104,35 @@ export default tseslint.config(
   // react
   {
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-    languageOptions: {
-      ...reactPlugin.configs.flat.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
+    ...Object.assign(
+      {},
+      reactPlugin.configs.flat.recommended, // This is not a plugin object, but a shareable config object
+      reactPlugin.configs.flat['jsx-runtime'], // Add this if you are using React 17+
+      {
+        languageOptions: {
+          ...reactPlugin.configs.flat.recommended.languageOptions,
+          globals: {
+            ...globals.serviceworker,
+            ...globals.browser,
+          },
+          parserOptions: {
+            ecmaFeatures: {
+              jsx: true,
+            },
+          },
         },
       },
-    },
-    ...reactPlugin.configs.flat.recommended, // This is not a plugin object, but a shareable config object
-    ...reactPlugin.configs.flat['jsx-runtime'], // Add this if you are using React 17+
-    plugins: {
-      'jsx-a11y': jsxA11y,
-      'react-hooks': reactHooksPlugin,
-    },
-    rules: {
-      'jsx-a11y/alt-text': 'error',
-      ...reactHooksPlugin.configs.recommended.rules,
-    },
+      {
+        plugins: {
+          'jsx-a11y': jsxA11y,
+          'react-hooks': reactHooksPlugin,
+        },
+        rules: {
+          'jsx-a11y/alt-text': 'error',
+          ...reactHooksPlugin.configs.recommended.rules,
+        },
+      },
+    ),
   },
 
   // Turns off all rules that are unnecessary or might conflict with Prettier

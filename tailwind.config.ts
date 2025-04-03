@@ -20,11 +20,14 @@ const config: Config = {
         '.dark:root': {
           ...cssVars.dark,
         },
+        ["[data-theme='dark']:root"]: {
+          ...cssVars.dark,
+        },
       }),
     ),
 
-    plugin(({ addUtilities }) => {
-      addUtilities(typography)
+    plugin(({ addComponents }) => {
+      addComponents(typography)
     }),
   ],
 }

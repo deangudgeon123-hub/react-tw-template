@@ -1,15 +1,10 @@
 import { lazy, Suspense } from 'react'
-import {
-  createBrowserRouter,
-  Navigate,
-  Outlet,
-  RouterProvider,
-} from 'react-router-dom'
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 import { RoutePaths } from '@/enums'
 import { MainLayout } from '@/layouts'
 
-export const AppRoutes = () => {
+export const createRouter = () => {
   const Homepage = lazy(() => import('@/pages/Homepage'))
 
   const pageAnimationOpts = {
@@ -27,7 +22,7 @@ export const AppRoutes = () => {
     transition: { duration: 0.5 },
   }
 
-  const router = createBrowserRouter([
+  return createBrowserRouter([
     {
       path: RoutePaths.Root,
       element: (
@@ -52,6 +47,4 @@ export const AppRoutes = () => {
       ],
     },
   ])
-
-  return <RouterProvider router={router} />
 }

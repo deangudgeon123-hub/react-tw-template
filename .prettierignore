@@ -6,3 +6,7 @@ yarn.lock
 scripts/*.js
 index.html
 *.md
+.yarn/
+abis
+public
+src/contexts/Web3Provider/types/

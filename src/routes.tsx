@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 import { RoutePaths } from '@/enums'
-import { MainLayout } from '@/layouts'
 
 export const createRouter = () => {
   const Homepage = lazy(() => import('@/pages/Homepage'))
@@ -32,17 +31,12 @@ export const createRouter = () => {
       ),
       children: [
         {
-          element: <MainLayout />,
-          children: [
-            {
-              path: RoutePaths.Root,
-              element: <Homepage {...pageAnimationOpts} />,
-            },
-            {
-              path: '*',
-              element: <Navigate replace to={RoutePaths.Root} />,
-            },
-          ],
+          path: RoutePaths.Root,
+          element: <Homepage {...pageAnimationOpts} />,
+        },
+        {
+          path: '*',
+          element: <Navigate replace to={RoutePaths.Root} />,
         },
       ],
     },

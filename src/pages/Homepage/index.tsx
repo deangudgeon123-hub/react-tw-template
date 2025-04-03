@@ -6,7 +6,7 @@ import { IconNames } from '@/enums'
 import { bus, BusEvents } from '@/helpers'
 import Erc20 from '@/pages/Homepage/components/erc20'
 import { sampleStore } from '@/store/sample'
-import { UiContainer, UiDivider, UiIcon, UiSpinner } from '@/ui'
+import UiIcon from '@/ui/UiIcon'
 
 type Props = HTMLAttributes<HTMLDivElement> & MotionProps
 
@@ -29,8 +29,6 @@ export default function Homepage({ ...rest }: Props) {
           className={'size-8 text-errorDark'}
         />
         <span className='typography-h4'>Hello world</span>
-        <UiSpinner />
-        <UiDivider />
         <button className='w-min whitespace-nowrap bg-primaryMain px-4 py-3 text-white'>
           Press me
         </button>
@@ -40,17 +38,14 @@ export default function Homepage({ ...rest }: Props) {
 
   return (
     <motion.div {...rest}>
-      <UiContainer className={'flex flex-col gap-4'}>
-        <Erc20 />
-        <UiDivider />
-        {state1}
-        <button
-          className='w-min whitespace-nowrap bg-primaryMain px-4 py-3 text-textPrimary'
-          onClick={testToasts}
-        >
-          Test toasts
-        </button>
-      </UiContainer>
+      <Erc20 />
+      {state1}
+      <button
+        className='w-min whitespace-nowrap bg-primaryMain px-4 py-3 text-textPrimary'
+        onClick={testToasts}
+      >
+        Test toasts
+      </button>
     </motion.div>
   )
 }

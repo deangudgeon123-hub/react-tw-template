@@ -15,23 +15,13 @@
     "sourceMap": true,
     "baseUrl": ".",
     "composite": true,
-    "types": [
-      "node",
-      "vite/client",
-      "@types/lodash",
-      "@types/uuid"
-    ],
+    "types": ["node", "vite/client", "@types/lodash", "@types/uuid"],
     "paths": {
       "@/*": ["src/*"],
       "@config": ["src/config.ts"],
       "@static": ["static"]
     },
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable",
-      "ScriptHost",
-    ],
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"],
     "isolatedModules": true,
     "noEmit": true
   },

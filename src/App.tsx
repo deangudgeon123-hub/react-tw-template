@@ -7,7 +7,6 @@ import { Web3ContextProvider } from '@/contexts/Web3Provider'
 import { ErrorHandler } from '@/helpers'
 import { useViewportSizes } from '@/hooks'
 import { createRouter } from '@/routes'
-import { UiSpinner } from '@/ui'
 
 const router = createRouter()
 
@@ -32,7 +31,7 @@ export function App() {
     init()
   })
 
-  if (!isAppInitialized) return <UiSpinner />
+  if (!isAppInitialized) return null
 
   return (
     <Web3ContextProvider>

@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { IconNames } from '@/enums'
 import { bus, BusEvents } from '@/helpers'
 import { cn } from '@/theme/utils'
-import { UiIcon } from '@/ui'
+import UiIcon from '@/ui/UiIcon'
 
 const STATUS_MESSAGE_AUTO_HIDE_DURATION = 30 * 1000
 

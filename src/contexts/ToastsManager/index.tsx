@@ -193,11 +193,11 @@ function DefaultToast({
       <div className='flex items-center gap-2'>
         <div
           className={cn(
-            'flex size-8 items-center justify-center rounded-full bg-componentPrimary',
+            'bg-componentPrimary flex size-8 items-center justify-center rounded-full',
           )}
         >
           <UiIcon
-            className='size-4 text-textPrimary'
+            className='text-textPrimary size-4'
             name={msgPayload.iconName}
           />
         </div>

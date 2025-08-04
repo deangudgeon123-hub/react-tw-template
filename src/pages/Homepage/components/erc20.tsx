@@ -99,11 +99,31 @@ export default function Erc20() {
 
   return (
     <div className='flex flex-col items-start gap-4'>
-      <button onClick={loadDetailsByEthers}>loadDetailsByEthers</button>
-      <button onClick={loadDetailsByViem}>loadDetailsByViem</button>
+      <button
+        className='bg-background text-foreground px-4 py-2'
+        onClick={loadDetailsByEthers}
+      >
+        loadDetailsByEthers
+      </button>
+      <button
+        className='bg-background text-foreground px-4 py-2'
+        onClick={loadDetailsByViem}
+      >
+        loadDetailsByViem
+      </button>
 
-      <button onClick={transferByEthers}>transferByEthers</button>
-      <button onClick={transferByViem}>transferByViem</button>
+      <button
+        className='bg-background text-foreground px-4 py-2'
+        onClick={transferByEthers}
+      >
+        transferByEthers
+      </button>
+      <button
+        className='bg-background text-foreground px-4 py-2'
+        onClick={transferByViem}
+      >
+        transferByViem
+      </button>
     </div>
   )
 }

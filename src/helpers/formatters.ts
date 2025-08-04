@@ -1,10 +1,6 @@
-import type {
-  BnConfigLike,
-  BnFormatConfig,
-  BnLike,
-} from '@distributedlab/tools'
-import { BN, Time, time, type TimeDate } from '@distributedlab/tools'
+import { Time, time } from '@distributedlab/tools'
 import enDayjsLocal from 'dayjs/locale/en'
+import { BigNumberish, formatUnits, Numeric } from 'ethers'
 
 export const setDayjsLocale = (locale: 'en') => {
   const nextLocale = {
@@ -14,148 +10,90 @@ export const setDayjsLocale = (locale: 'en') => {
   Time.locale(nextLocale)
 }
 
-export function formatDateDMY(date: TimeDate) {
-  return new Time(date).format('DD MMM YYYY')
-}
-
-export function formatDateDMYT(date: TimeDate) {
-  return new Time(date).format('DD MMM YYYY HH:mm')
-}
-
-export function formatDateDiff(dateEnd: TimeDate) {
-  return time(dateEnd).fromNow
-}
-
-// number
-const defaultBnFormatConfig: BnFormatConfig = {
-  decimals: 2,
-  groupSeparator: ',',
-  decimalSeparator: '.',
-}
-
-/**
- * Format human amount without trailing zeros
- * @param amount
- */
-function removeTrailingZeros(amount: string) {
-  const [integer, fraction] = amount.split('.')
-
-  if (!fraction) return integer
-
-  let result = integer
-
-  for (let i = fraction.length - 1; i >= 0; i--) {
-    if (fraction[i] !== '0') {
-      result += `.${fraction.slice(0, i + 1)}`
-      break
-    }
-  }
-
-  return result
-}
-
-/**
- * Format human amount with prefix
- * @param value
- */
-function convertNumberWithPrefix(value: string) {
-  const M_PREFIX_AMOUNT = 1_000_000
-  const B_PREFIX_AMOUNT = 1_000_000_000
-  const T_PREFIX_AMOUNT = 1_000_000_000_000
-
-  const getPrefix = (amount: number): 'M' | 'B' | 'T' | '' => {
-    if (amount >= T_PREFIX_AMOUNT) return 'T'
-    if (amount >= B_PREFIX_AMOUNT) return 'B'
-    if (amount >= M_PREFIX_AMOUNT) return 'M'
-
-    return ''
-  }
-
-  const prefix = getPrefix(+value)
-
-  const divider = {
-    M: M_PREFIX_AMOUNT,
-    B: B_PREFIX_AMOUNT,
-    T: T_PREFIX_AMOUNT,
-    '': 1,
-  }[prefix]
-
-  const finalAmount = BN.fromRaw(Number(value) / divider, 3).format({
-    decimals: 3,
-    groupSeparator: '',
-    decimalSeparator: '.',
-  })
-
-  return `${removeTrailingZeros(finalAmount)}${prefix}`
-}
-
-export function formatNumber(value: number, formatConfig?: BnFormatConfig) {
-  try {
-    const formatCfg = formatConfig || {
-      ...defaultBnFormatConfig,
-    }
-
-    return removeTrailingZeros(BN.fromRaw(value).format(formatCfg))
-  } catch (error) {
-    return '0'
+export function handleTimestamp(timestamp: number) {
+  if (
+    Math.abs(time().timestamp - timestamp) >
+    Math.abs(time().timestamp - timestamp / 1000)
+  ) {
+    return time(timestamp / 1000)
+  } else {
+    return time(timestamp)
   }
 }
 
-export function formatAmount(
-  amount: BnLike,
-  decimalsOrConfig?: BnConfigLike,
-  formatConfig?: BnFormatConfig,
+export function formatBigNumber(
+  value: BigNumberish,
+  decimals?: string | Numeric,
+  cfg?: {
+    fixedPrecision?: number
+  },
 ) {
   try {
-    const decimals =
-      typeof decimalsOrConfig === 'number'
-        ? decimalsOrConfig
-        : decimalsOrConfig?.decimals
+    const formattedValue = formatUnits(value, decimals)
 
-    const formatCfg = formatConfig || {
-      ...defaultBnFormatConfig,
-      ...(decimals && { decimals }),
+    if (cfg?.fixedPrecision) {
+      const [integerPart, decimalPart] = formattedValue.split('.')
+      const fixedDecimalPart = decimalPart
+        ? decimalPart.slice(0, cfg.fixedPrecision)
+        : ''
+      return `${integerPart}${fixedDecimalPart ? `.${fixedDecimalPart}` : ''}`
     }
 
-    if (Number(decimals) === 0) {
-      const newAmount = BN.fromRaw(amount?.toString(), 18)
-
-      return removeTrailingZeros(BN.fromBigInt(newAmount, 18).format(formatCfg))
-    }
-
-    return removeTrailingZeros(
-      BN.fromBigInt(amount, decimalsOrConfig).format(formatCfg),
-    )
+    return formattedValue
   } catch (error) {
-    return '0'
+    return '-'
+  }
+}
+
+function formatAmountWithSuffix(amount: string | bigint): [string, string] {
+  try {
+    const suffixes = ['', 'K', 'M', 'B', 'T', 'Q', 'S', 'O', 'N']
+    let suffixIndex = 0
+    let formattedAmount = Number(amount)
+
+    while (formattedAmount >= 1000 && suffixIndex < suffixes.length - 1) {
+      formattedAmount /= 1000
+      suffixIndex++
+    }
+    return [formattedAmount.toFixed(1), suffixes[suffixIndex]]
+  } catch (error) {
+    return ['-', '-']
   }
 }
 
 export function formatBalance(
-  amount: BnLike,
-  decimalsOrConfig?: BnConfigLike,
-  formatConfig?: BnFormatConfig,
-) {
+  amount: BigNumberish,
+  decimals: bigint | number = 18,
+): string {
   try {
-    const decimals =
-      typeof decimalsOrConfig === 'number'
-        ? decimalsOrConfig
-        : decimalsOrConfig?.decimals
+    const formattedAmount = formatUnits(String(amount), Number(decimals))
+    const [convertedAmount, suffix] = formatAmountWithSuffix(formattedAmount)
 
-    const formatCfg = formatConfig || {
-      ...defaultBnFormatConfig,
-      groupSeparator: '',
-      ...(decimals && { decimals }),
+    const fmtCfg = new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: Math.min(4, Number(decimals)),
+      roundingMode: 'trunc',
+      roundingPriority: 'lessPrecision',
+    })
+
+    if (suffix) {
+      return fmtCfg.format(Number(convertedAmount)) + suffix
     }
 
-    return convertNumberWithPrefix(
-      formatAmount(amount, decimalsOrConfig, formatCfg),
-    )
+    return fmtCfg.format(Number(formattedAmount))
   } catch (error) {
-    return '0'
+    return '-'
   }
 }
 
 export function abbrCenter(addr: string, start = 4, end = 4) {
   return `${addr.slice(0, start)}...${addr.slice(-end)}`
+}
+
+export function bnMax(...args: bigint[]) {
+  return args.reduce((m, e) => (e > m ? e : m))
+}
+
+export function bnMin(...args: bigint[]) {
+  return args.reduce((m, e) => (e < m ? e : m))
 }

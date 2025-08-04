@@ -1,11 +1,7 @@
 import react from '@vitejs/plugin-react'
-/**
- * @description Enable import if you need polyfills
- *
- * import { nodePolyfills } from 'vite-plugin-node-polyfills'
- * import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
- * import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
- */
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 import * as fs from 'fs'
 import * as path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -29,13 +25,10 @@ export default defineConfig(({ mode }) => {
   // const buildVersion = env.VITE_APP_BUILD_VERSION
 
   return {
-    ...(env.VITE_PORT
-      ? {
-          server: {
-            port: Number(env.VITE_PORT),
-          },
-        }
-      : {}),
+    server: {
+      ...(env.VITE_PORT && { port: Number(env.VITE_PORT) }),
+      sourcemapIgnoreList: false,
+    },
     plugins: [
       react(),
       // Custom plugin to load markdown files
@@ -71,6 +64,16 @@ export default defineConfig(({ mode }) => {
             }),
           ]
         : []),
+
+      // Enable rollup polyfills plugin
+      // used during production bundling
+      nodePolyfills({
+        globals: {
+          Buffer: true, // can also be 'build', 'dev', or false
+          global: true,
+          process: true,
+        },
+      }),
     ],
     css: {
       preprocessorOptions: {
@@ -85,37 +88,46 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': `${root}/`,
         '@config': `${root}/config.ts`,
-        '@static': `${root}/../static`,
+        '@public': `${root}/../public`,
       },
     },
-    /**
-     * @description Enable configuration for polyfills
-     *
-     * optimizeDeps: {
-     *       esbuildOptions: {
-     *         define: {
-     *           global: 'globalThis',
-     *         },
-     *       },
-     *       // Enable esbuild polyfill plugins
-     *       plugins: [
-     *         NodeGlobalsPolyfillPlugin({
-     *           process: true,
-     *           buffer: true,
-     *         }),
-     *         NodeModulesPolyfillPlugin(),
-     *       ],
-     *     },
-     *     build: {
-     *       target: 'esnext',
-     *       rollupOptions: {
-     *         plugins: [
-     *           // Enable rollup polyfills plugin
-     *           // used during production bundling
-     *           nodePolyfills(),
-     *         ],
-     *       },
-     *     },
-     */
+    optimizeDeps: {
+      esbuildOptions: {
+        define: {
+          global: 'globalThis',
+        },
+      },
+      // Enable esbuild polyfill plugins
+      plugins: [
+        NodeGlobalsPolyfillPlugin({
+          process: true,
+          buffer: true,
+        }),
+        NodeModulesPolyfillPlugin(),
+      ],
+    },
+    build: {
+      target: 'esnext',
+      sourcemap: true,
+      rollupOptions: {
+        plugins: [
+          NodeGlobalsPolyfillPlugin({
+            process: true,
+            buffer: true,
+          }),
+          NodeModulesPolyfillPlugin(),
+
+          // Enable rollup polyfills plugin
+          // used during production bundling
+          nodePolyfills({
+            globals: {
+              Buffer: true, // can also be 'build', 'dev', or false
+              global: true,
+              process: true,
+            },
+          }),
+        ],
+      },
+    },
   }
 })

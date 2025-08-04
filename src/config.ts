@@ -6,7 +6,6 @@ import packageJson from '../package.json'
 const envSchema = z.object({
   VITE_API_URL: z.string(),
   VITE_APP_NAME: z.string(),
-  VITE_APP_BUILD_VERSION: z.string().optional(),
 })
 
 export const config = {

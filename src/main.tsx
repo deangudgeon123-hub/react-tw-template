@@ -1,4 +1,4 @@
-import '@/theme/styles.scss'
+import '@/theme/global.css'
 import '@/localization'
 import 'virtual:svg-icons-register'
 

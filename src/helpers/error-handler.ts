@@ -8,7 +8,7 @@ export class ErrorHandler {
     const { msgTranslation, msgType } = ErrorHandler._getErrorMessage(error)
     if (msgTranslation) {
       emitter.emit(msgType, {
-        message: errorMessage,
+        message: errorMessage || msgTranslation,
       })
     }
 
@@ -17,6 +17,7 @@ export class ErrorHandler {
 
   static processWithoutFeedback(error: Error | unknown): void {
     log.error(error)
+    log.error(JSON.stringify(error, null, 2))
   }
 
   static _getErrorMessage(error: Error | unknown): {

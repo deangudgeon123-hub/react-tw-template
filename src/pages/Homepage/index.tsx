@@ -26,10 +26,10 @@ export default function Homepage({ ...rest }: Props) {
       <div className='flex flex-col gap-2'>
         <UiIcon
           name={IconNames.Microphone}
-          className={'size-8 text-errorDark'}
+          className={'text-errorDark size-8'}
         />
-        <span className='typography-h4'>Hello world</span>
-        <button className='w-min whitespace-nowrap bg-primaryMain px-4 py-3 text-white'>
+        <span className='typography-m3-headline-large'>Hello world</span>
+        <button className='bg-background text-foreground w-min px-4 py-3 whitespace-nowrap'>
           Press me
         </button>
       </div>,
@@ -41,7 +41,7 @@ export default function Homepage({ ...rest }: Props) {
       <Erc20 />
       {state1}
       <button
-        className='w-min whitespace-nowrap bg-primaryMain px-4 py-3 text-textPrimary'
+        className='bg-background text-foreground w-min px-4 py-3 whitespace-nowrap'
         onClick={testToasts}
       >
         Test toasts

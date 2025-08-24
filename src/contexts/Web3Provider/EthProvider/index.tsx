@@ -10,8 +10,8 @@ import {
 import {
   createContext,
   PropsWithChildren,
+  use,
   useCallback,
-  useContext,
   useMemo,
 } from 'react'
 import { Account, Chain, Client } from 'viem'
@@ -77,7 +77,7 @@ const ethContext = createContext<EthContext>({
 })
 
 export const useEthContext = () => {
-  return useContext(ethContext)
+  return use(ethContext)
 }
 
 export const EthProvider = ({ children }: PropsWithChildren) => {

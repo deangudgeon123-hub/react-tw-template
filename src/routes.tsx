@@ -3,10 +3,14 @@ import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 export enum RoutePaths {
   Root = '/',
+
+  App = '/app',
+  Dashboard = '/app/dashboard',
 }
 
 export const createRouter = () => {
-  const Homepage = lazy(() => import('@/pages/Homepage'))
+  const AppPage = lazy(() => import('@/pages/App'))
+  const Dashboard = lazy(() => import('@/pages/App/pages/Dashboard'))
 
   return createBrowserRouter([
     {
@@ -18,12 +22,22 @@ export const createRouter = () => {
       ),
       children: [
         {
-          path: RoutePaths.Root,
-          element: <Homepage />,
+          index: true,
+          element: <Navigate replace to={RoutePaths.App} />,
         },
         {
-          path: '*',
-          element: <Navigate replace to={RoutePaths.Root} />,
+          path: RoutePaths.App,
+          element: <AppPage />,
+          children: [
+            {
+              index: true,
+              element: <Navigate replace to={RoutePaths.Dashboard} />,
+            },
+            {
+              path: RoutePaths.Dashboard,
+              element: <Dashboard />,
+            },
+          ],
         },
       ],
     },

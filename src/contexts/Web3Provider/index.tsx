@@ -5,7 +5,7 @@ import { ChainController } from '@reown/appkit-controllers'
 import {
   createContext,
   PropsWithChildren,
-  useContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -30,7 +30,7 @@ const web3Context = createContext<Web3Context>({
 })
 
 export const useWeb3Context = () => {
-  const context = useContext(web3Context)
+  const context = use(web3Context)
 
   if (!context) {
     throw new Error('useWeb3Context must be used within a Web3Provider')

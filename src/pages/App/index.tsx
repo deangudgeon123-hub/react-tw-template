@@ -45,7 +45,11 @@ export default function AppPage() {
           </div>
         </header>
 
-        <Outlet />
+        <div className='relative flex flex-1 overflow-x-hidden overflow-y-auto'>
+          <div className='absolute inset-0'>
+            <Outlet />
+          </div>
+        </div>
       </UiSidebarInset>
     </UiSidebarProvider>
   )

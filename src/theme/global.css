@@ -149,26 +149,6 @@ body {
   @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@utility animate-slideIn {
-  animation: slideIn 0.3s ease-out;
-}
-
-@utility text-link {
-  @apply text-primary underline-offset-4 transition-colors duration-200;
-}
-
 /* Material 3 Typography */
 /* Display styles */
 @utility typography-m3-display-large {

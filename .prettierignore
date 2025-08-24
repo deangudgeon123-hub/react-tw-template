@@ -9,4 +9,4 @@ index.html
 .yarn/
 abis
 public
-src/contexts/Web3Provider/types/
+src/contexts/Web3Provider/**/contracts/**/types

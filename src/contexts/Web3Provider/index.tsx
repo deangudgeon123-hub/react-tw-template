@@ -1,172 +1,156 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { switchChain } from '@wagmi/core'
+import { defineChain } from '@reown/appkit/networks'
+import { useAppKit, useAppKitEvents, useDisconnect } from '@reown/appkit/react'
+import { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import {
   createContext,
   PropsWithChildren,
-  useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
+  useState,
 } from 'react'
-import {
-  type Account,
-  type Chain,
-  type Client,
-  createPublicClient,
-  type Transport,
-} from 'viem'
-import { base, mainnet, sepolia } from 'viem/chains'
-import {
-  Connector,
-  createConfig,
-  http,
-  useAccount,
-  useClient,
-  useConnect,
-  useConnectorClient,
-  UseConnectReturnType,
-  useDisconnect,
-  WagmiProvider,
-} from 'wagmi'
-// import { walletConnect } from 'wagmi/connectors'
 
-const queryClient = new QueryClient()
+import { EthProvider } from './EthProvider'
 
-export const config = createConfig({
-  chains: [base, sepolia, mainnet],
-  // connectors: [
-  //   walletConnect({
-  //     projectId: '',
-  //     relayUrl: 'wss://relay.walletconnect.com',
-  //     metadata: {
-  //       name: 'React App',
-  //       description: 'React App for WalletConnect',
-  //       url: 'https://walletconnect.com/',
-  //       icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  //     },
-  //     isNewChainsStale: true,
-  //   }),
-  // ],
-  transports: {
-    [base.id]: http(),
-    [sepolia.id]: http(),
-    [mainnet.id]: http(),
+type Web3Context = {
+  isInitialized: boolean
+  allSupportedChains: AppKitNetwork[]
+  connectAsync: (namespace: ChainNamespace) => Promise<void>
+}
+
+const web3Context = createContext<Web3Context>({
+  isInitialized: false,
+  allSupportedChains: [],
+
+  connectAsync: async () => {
+    throw new TypeError('Not implemented')
   },
 })
 
-const fallbackClient = createPublicClient({
-  chain: base,
-  transport: http(),
-})
-
-export type Web3ProviderContext<
-  A extends Account | undefined = Account | undefined,
-> = {
-  connectManager: UseConnectReturnType
-
-  client: Client<Transport, Chain, A>
-
-  address: `0x${string}` | ''
-  chain: Chain | undefined
-  isConnected: boolean
-
-  isRightNetwork: boolean
-
-  connect: (connector: Connector) => void
-  disconnect: () => void
-
-  safeSwitchChain: (
-    id: (typeof config)['chains'][number]['id'],
-  ) => Promise<void>
-}
-
-const web3ProviderContext = createContext<Web3ProviderContext>({
-  connectManager: {} as UseConnectReturnType,
-  client: fallbackClient,
-
-  address: '',
-  chain: fallbackClient.chain,
-  isConnected: false,
-
-  isRightNetwork: false,
-
-  connect: () => {},
-  disconnect: () => {},
-
-  safeSwitchChain: async () => {},
-})
-
 export const useWeb3Context = () => {
-  return useContext(web3ProviderContext)
+  const context = useContext(web3Context)
+
+  if (!context) {
+    throw new Error('useWeb3Context must be used within a Web3Provider')
+  }
+
+  return context
 }
 
-export const Web3ContextProvider = (props: PropsWithChildren) => {
-  return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <Web3ContextProviderContent>
-          {props.children}
-        </Web3ContextProviderContent>
-      </QueryClientProvider>
-    </WagmiProvider>
-  )
-}
+const useConnectAsync = () => {
+  const { open, close } = useAppKit()
 
-const Web3ContextProviderContent = (props: PropsWithChildren) => {
-  const connectManager = useConnect()
-
-  const account = useAccount()
   const { disconnect } = useDisconnect()
 
-  const connect = useCallback(
-    async (connector: Connector) => {
-      connectManager.connect({ connector })
-    },
-    [connectManager],
-  )
+  const appKitEvent = useAppKitEvents()
 
-  const publicClient = useClient({ config })
+  const [isConnecting, setIsConnecting] = useState(false)
 
-  const { data: walletClient } = useConnectorClient({ config })
+  const connectPromiseResolve = useRef<() => void>(undefined)
+  const connectPromiseReject = useRef<(error?: Error) => void>(undefined)
 
-  const client = useMemo(() => {
-    if (!account.chain) {
-      return publicClient as Client<Transport, Chain>
+  useEffect(() => {
+    if (!isConnecting) return
+
+    if (appKitEvent?.data.event === 'CONNECT_SUCCESS') {
+      connectPromiseResolve.current?.()
+      connectPromiseResolve.current = () => () => {}
+      connectPromiseReject.current = () => () => {}
+      close()
+      setIsConnecting(false)
+
+      return
     }
 
-    return walletClient as Client<Transport, Chain, Account>
-  }, [account.chain, publicClient, walletClient])
+    if (appKitEvent?.data.event === 'CONNECT_ERROR') {
+      console.error('Failed to connect to AppKit:')
+      connectPromiseResolve.current?.()
+      connectPromiseResolve.current = () => () => {}
+      connectPromiseReject.current = () => () => {}
+      close()
+      setIsConnecting(false)
 
-  const isRightNetwork = useMemo((): boolean => {
-    return Boolean(client?.chain?.id)
-  }, [client?.chain?.id])
+      return
+    }
 
-  const safeSwitchChain = useCallback(
-    async (id: (typeof config)['chains'][number]['id']) => {
-      await switchChain(config, { chainId: id })
-    },
-    [],
-  )
+    if (appKitEvent?.data.event === 'MODAL_CLOSE') {
+      connectPromiseReject.current?.(new Error('User closed the modal'))
+      connectPromiseResolve.current = () => () => {}
+      connectPromiseReject.current = () => () => {}
+      setIsConnecting(false)
+
+      return
+    }
+  }, [
+    appKitEvent?.data.event,
+    close,
+    connectPromiseReject,
+    connectPromiseResolve,
+    isConnecting,
+  ])
+
+  return async (namespace: ChainNamespace) => {
+    await disconnect({
+      namespace: namespace,
+    })
+
+    setIsConnecting(true)
+
+    return new Promise<void>((resolve, reject) => {
+      open({ view: 'Connect', namespace: namespace })
+
+      connectPromiseResolve.current = resolve
+      connectPromiseReject.current = reject
+    })
+  }
+}
+
+export const Web3Provider = ({ children }: PropsWithChildren) => {
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  const appKitEvent = useAppKitEvents()
+
+  const connectAsync = useConnectAsync()
+
+  const allSupportedChains = useMemo(() => {
+    return ChainController.getAllRequestedCaipNetworks().map(chain =>
+      defineChain({
+        ...chain,
+        name: chain.name,
+        nativeCurrency: chain.nativeCurrency,
+        rpcUrls: chain.rpcUrls,
+        id: chain.id,
+        chainNamespace: chain.chainNamespace,
+        caipNetworkId: chain.caipNetworkId,
+        assets: chain.assets,
+        blockExplorers: chain.blockExplorers,
+      }),
+    )
+  }, [])
+
+  useEffect(() => {
+    if (
+      appKitEvent?.data.event === 'CONNECT_SUCCESS' ||
+      appKitEvent?.data.event === 'INITIALIZE'
+    ) {
+      setIsInitialized(true)
+    }
+  }, [appKitEvent])
+
+  if (!isInitialized) return null
 
   return (
-    <web3ProviderContext.Provider
+    <web3Context.Provider
       value={{
-        connectManager,
+        isInitialized,
+        allSupportedChains,
 
-        client: client,
-
-        address: account.address ?? '',
-        chain: client?.chain,
-        isConnected: account.isConnected,
-
-        isRightNetwork,
-
-        connect,
-        disconnect,
-
-        safeSwitchChain,
+        connectAsync,
       }}
     >
-      {props.children}
-    </web3ProviderContext.Provider>
+      <EthProvider>{children}</EthProvider>
+    </web3Context.Provider>
   )
 }

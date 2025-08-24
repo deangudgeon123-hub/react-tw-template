@@ -1,10 +1,10 @@
 import Emittery from 'emittery'
 
-import type { ToastPayload } from '@/contexts/ToastsManager'
+import { DefaultToastPayload } from '@/ui/UiToaster'
 
 export const emitter = new Emittery<{
-  error: Partial<ToastPayload>
-  warning: Partial<ToastPayload>
-  success: Partial<ToastPayload>
-  info: Partial<ToastPayload>
+  error: Partial<DefaultToastPayload>
+  warning: Partial<DefaultToastPayload>
+  success: Partial<DefaultToastPayload>
+  info: Partial<DefaultToastPayload>
 }>()

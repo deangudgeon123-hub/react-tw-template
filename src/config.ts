@@ -1,16 +1,69 @@
+import { AppKitNetwork } from '@reown/appkit/networks'
+import {
+  base,
+  holesky,
+  mainnet,
+  polygonAmoy,
+  sepolia,
+} from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { LogLevelDesc } from 'loglevel'
+import { http } from 'viem'
 import { z } from 'zod'
 
 import packageJson from '../package.json'
 
 const envSchema = z.object({
-  VITE_API_URL: z.string(),
   VITE_APP_NAME: z.string(),
+  VITE_TSS_API_URL: z.string(),
+  VITE_RPC_API_URL: z.string(),
 })
 
 export const config = {
   BUILD_VERSION: packageJson.version,
-  ...envSchema.parse(import.meta.env),
   LOG_LEVEL: 'trace' as LogLevelDesc,
-  erc20Token: '0x08BE00b659713E615795954B778dbacD1F14efEb',
+  MODE: import.meta.env.MODE,
+  ...envSchema.parse(import.meta.env),
+
+  DISCORD_LINK: 'https://discord.com/invite/confidentiallayer',
+  X_LINK: 'https://x.com/ConfidentialLyr',
 }
+
+export const projectId = '41f8085dc01ff1ca42c6efcb2c12c169'
+
+export const metadata = {
+  name: `${config.VITE_APP_NAME} AppKit`,
+  description: `AppKit ${config.VITE_APP_NAME}`,
+  url: window.origin,
+  icons: [`${window.origin}/branding/logo.svg`],
+}
+
+const ethNetworks: [AppKitNetwork, ...AppKitNetwork[]] =
+  config.MODE === 'production' ? [mainnet, base] : [sepolia, polygonAmoy]
+
+export const wagmiAdapter = new WagmiAdapter({
+  networks: [...ethNetworks],
+  projectId,
+  transports: {
+    [holesky.id]: http(),
+  },
+})
+
+export const initAppKit = () => {
+  createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [...ethNetworks],
+    allowUnsupportedChain: true,
+    projectId,
+    metadata,
+    features: {
+      analytics: false,
+      email: false,
+      socials: false,
+    },
+    allWallets: 'HIDE',
+  })
+}
+
+initAppKit()

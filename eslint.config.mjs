@@ -1,7 +1,7 @@
 // @ts-check
 
 import eslint from '@eslint/js'
-import eslintConfigPrettier from 'eslint-config-prettier'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import * as importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
@@ -142,8 +142,9 @@ export default tseslint.config(
 
   // use prettierrc
   {
-    ...eslintPluginPrettierRecommended,
+    plugins: eslintPluginPrettierRecommended.plugins,
     rules: {
+      ...eslintPluginPrettierRecommended.rules,
       'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     },
   },
@@ -177,6 +178,13 @@ export default tseslint.config(
           filePath: path.resolve('./src/localization/resources/en.json'),
         },
       ],
+
+      'i18n-json/identical-placeholders': [
+        2,
+        {
+          filePath: path.resolve('./src/localization/resources/en.json'),
+        },
+      ],
       'prettier/prettier': [
         0,
         {
@@ -200,7 +208,6 @@ export default tseslint.config(
       '*.md',
       './*.js',
       '**/env.js',
-      'src/contexts/Web3Provider/types',
       'node_modules/',
     ],
   },

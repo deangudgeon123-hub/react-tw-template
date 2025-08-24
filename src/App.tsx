@@ -1,19 +1,21 @@
 import { config } from '@config'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { useEffectOnce } from 'react-use'
 
-import { Web3ContextProvider } from '@/contexts/Web3Provider'
+import { Web3Provider } from '@/contexts/Web3Provider'
 import { ErrorHandler } from '@/helpers'
-import { useViewportSizes } from '@/hooks'
 import { createRouter } from '@/routes'
+
+import { ThemeProvider } from './contexts/ThemeProvider'
 
 const router = createRouter()
 
+const queryClient = new QueryClient()
+
 export function App() {
   const [isAppInitialized, setIsAppInitialized] = useState(false)
-
-  useViewportSizes()
 
   const init = useCallback(async () => {
     try {
@@ -34,8 +36,12 @@ export function App() {
   if (!isAppInitialized) return null
 
   return (
-    <Web3ContextProvider>
-      <RouterProvider router={router} />
-    </Web3ContextProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Web3Provider>
+          <RouterProvider router={router} />
+        </Web3Provider>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }

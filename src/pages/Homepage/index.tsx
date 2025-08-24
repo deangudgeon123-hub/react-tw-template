@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ComponentProps } from 'react'
 import { useForm } from 'react-hook-form'
-import z from 'zod'
+import { z } from 'zod/mini'
 
 export default function Homepage({ ...rest }: ComponentProps<'div'>) {
   const {
@@ -9,6 +9,7 @@ export default function Homepage({ ...rest }: ComponentProps<'div'>) {
 
     register,
   } = useForm({
+    mode: 'onBlur',
     defaultValues: {
       email: '',
       password: '',
@@ -16,7 +17,7 @@ export default function Homepage({ ...rest }: ComponentProps<'div'>) {
     resolver: zodResolver(
       z.object({
         email: z.email(),
-        password: z.string().min(6),
+        password: z.string().check(z.minLength(6)),
       }),
     ),
   })

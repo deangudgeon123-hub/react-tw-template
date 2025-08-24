@@ -4,13 +4,13 @@ import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { LogLevelDesc } from 'loglevel'
 import { http } from 'viem'
-import { z } from 'zod'
+import { z } from 'zod/mini'
 
 import packageJson from '../package.json'
 
 const envSchema = z.object({
-  VITE_APP_NAME: z.string().optional().default('React TW Template'),
-  VITE_API_URL: z.string().optional(),
+  VITE_APP_NAME: z._default(z.string(), 'React TW Template'),
+  VITE_API_URL: z.nullable(z.optional(z.string())),
 })
 
 export const config = {

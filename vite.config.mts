@@ -85,11 +85,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
       dedupe: ['react', 'lodash'],
-      alias: {
-        '@': `${root}/`,
-        '@config': `${root}/config.ts`,
-        '@public': `${root}/../public`,
-      },
     },
     optimizeDeps: {
       esbuildOptions: {

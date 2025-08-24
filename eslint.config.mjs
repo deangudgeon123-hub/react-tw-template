@@ -10,9 +10,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
-import stylisticJs from '@stylistic/eslint-plugin-js'
-import stylisticTs from '@stylistic/eslint-plugin-ts'
-import stylisticJsx from '@stylistic/eslint-plugin-jsx'
+import stylistic from '@stylistic/eslint-plugin'
 import unusedImports from 'eslint-plugin-unused-imports'
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
 import i18nJsonPlugin from 'eslint-plugin-i18n-json'
@@ -24,9 +22,7 @@ export default tseslint.config(
   tseslint.configs.recommended,
   {
     plugins: {
-      '@stylistic/js': stylisticJs,
-      '@stylistic/ts': stylisticTs,
-      '@stylistic/jsx': stylisticJsx,
+      '@stylistic': stylistic,
     },
     rules: {
       // Place custom rules here
@@ -76,7 +72,7 @@ export default tseslint.config(
       ],
     },
     plugins: {
-      import: importPlugin.flatConfigs?.recommended.plugins.import,
+      ...importPlugin.flatConfigs?.recommended.plugins,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
     },

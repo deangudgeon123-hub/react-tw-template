@@ -1,11 +1,5 @@
 import { AppKitNetwork } from '@reown/appkit/networks'
-import {
-  base,
-  holesky,
-  mainnet,
-  polygonAmoy,
-  sepolia,
-} from '@reown/appkit/networks'
+import { holesky, mainnet, polygonAmoy, sepolia } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { LogLevelDesc } from 'loglevel'
@@ -15,9 +9,8 @@ import { z } from 'zod'
 import packageJson from '../package.json'
 
 const envSchema = z.object({
-  VITE_APP_NAME: z.string(),
-  VITE_TSS_API_URL: z.string(),
-  VITE_RPC_API_URL: z.string(),
+  VITE_APP_NAME: z.string().optional().default('React TW Template'),
+  VITE_API_URL: z.string().optional(),
 })
 
 export const config = {
@@ -40,7 +33,7 @@ export const metadata = {
 }
 
 const ethNetworks: [AppKitNetwork, ...AppKitNetwork[]] =
-  config.MODE === 'production' ? [mainnet, base] : [sepolia, polygonAmoy]
+  config.MODE === 'production' ? [mainnet] : [sepolia, polygonAmoy]
 
 export const wagmiAdapter = new WagmiAdapter({
   networks: [...ethNetworks],
@@ -54,6 +47,7 @@ export const initAppKit = () => {
   createAppKit({
     adapters: [wagmiAdapter],
     networks: [...ethNetworks],
+    enableCoinbase: false,
     allowUnsupportedChain: true,
     projectId,
     metadata,

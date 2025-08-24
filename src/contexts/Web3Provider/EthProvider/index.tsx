@@ -80,7 +80,15 @@ export const useEthContext = () => {
   return useContext(ethContext)
 }
 
-export const EthProvider = (props: PropsWithChildren) => {
+export const EthProvider = ({ children }: PropsWithChildren) => {
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <EthProviderContent>{children}</EthProviderContent>
+    </WagmiProvider>
+  )
+}
+
+export const EthProviderContent = (props: PropsWithChildren) => {
   const { connectAsync } = useWeb3Context()
 
   const { chain } = useAccount()

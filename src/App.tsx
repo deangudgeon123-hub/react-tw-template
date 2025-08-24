@@ -4,7 +4,6 @@ import { useCallback, useState } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { useEffectOnce } from 'react-use'
 
-import { Web3Provider } from '@/contexts/Web3Provider'
 import { ErrorHandler } from '@/helpers'
 import { createRouter } from '@/routes'
 
@@ -38,9 +37,9 @@ export function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <Web3Provider>
-          <RouterProvider router={router} />
-        </Web3Provider>
+        {/* <Web3Provider> */}
+        <RouterProvider router={router} />
+        {/* </Web3Provider> */}
       </QueryClientProvider>
     </ThemeProvider>
   )

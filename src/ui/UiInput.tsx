@@ -1,6 +1,12 @@
 import * as React from 'react'
+import { ReactNode } from 'react'
+import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
+import { v4 } from 'uuid'
 
 import { cn } from '@/theme/utils'
+
+import { UiCollapsible } from './UiCollapsible'
+import { UiLabel } from './UiLabel'
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
@@ -18,4 +24,61 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   )
 }
 
-export { Input as UiInput }
+export type ControlledUiInputProps<T extends FieldValues> =
+  React.ComponentProps<'input'> & {
+    label?: ReactNode
+    leadingContent?: ReactNode
+    trailingContent?: ReactNode
+  } & UseControllerProps<T>
+
+function ControlledUiInput<T extends FieldValues>({
+  name,
+  control,
+  rules,
+  label,
+  leadingContent,
+  trailingContent,
+  ...rest
+}: ControlledUiInputProps<T>) {
+  const id = React.useMemo(() => v4(), [])
+  const { field, fieldState } = useController({ control, name, rules: rules })
+
+  return (
+    <div className='flex flex-col items-start gap-2'>
+      {label &&
+        (() => {
+          return (
+            <UiLabel
+              className='text-muted-foreground typography-m3-label-medium!'
+              htmlFor={id}
+            >
+              {label}
+            </UiLabel>
+          )
+        })()}
+      <div className='relative isolate flex w-full'>
+        {leadingContent}
+        <Input
+          {...rest}
+          id={id}
+          ref={field.ref}
+          autoCapitalize='none'
+          onChange={e => {
+            rest.onChange?.(e)
+            field.onChange(e)
+          }}
+          value={field.value}
+        />
+        {trailingContent}
+      </div>
+
+      <UiCollapsible open={!!fieldState.error?.message} className='w-full'>
+        <span className='text-destructive typography-m3-body-small'>
+          {fieldState.error?.message}
+        </span>
+      </UiCollapsible>
+    </div>
+  )
+}
+
+export { ControlledUiInput, Input as UiInput }

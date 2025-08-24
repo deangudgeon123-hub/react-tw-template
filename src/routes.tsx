@@ -6,11 +6,15 @@ export enum RoutePaths {
 
   App = '/app',
   Dashboard = '/app/dashboard',
+
+  Auth = '/auth',
 }
 
 export const createRouter = () => {
   const AppPage = lazy(() => import('@/pages/App'))
   const Dashboard = lazy(() => import('@/pages/App/pages/Dashboard'))
+
+  const Auth = lazy(() => import('@/pages/Auth'))
 
   return createBrowserRouter([
     {
@@ -38,6 +42,10 @@ export const createRouter = () => {
               element: <Dashboard />,
             },
           ],
+        },
+        {
+          path: RoutePaths.Auth,
+          element: <Auth />,
         },
       ],
     },

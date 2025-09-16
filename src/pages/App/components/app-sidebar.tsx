@@ -181,7 +181,7 @@ export function AppSidebar({
         <NavSecondary items={data.navSecondary} className='mt-auto' />
       </UiSidebarContent>
       <UiSidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </UiSidebarFooter>
     </UiSidebar>
   )

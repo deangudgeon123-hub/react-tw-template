@@ -1,14 +1,17 @@
 'use client'
 
+import Avatar from 'boring-avatars'
 import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
   CreditCard,
-  LogOut,
+  LogInIcon,
+  LogOutIcon,
   Sparkles,
 } from 'lucide-react'
 
+import { useEthContext } from '@/contexts/Web3Provider/EthProvider'
 import { UiAvatar, UiAvatarFallback, UiAvatarImage } from '@/ui/UiAvatar'
 import {
   UiDropdownMenu,
@@ -26,16 +29,52 @@ import {
   useUiSidebar,
 } from '@/ui/UiSidebar'
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export function NavUser() {
+  const { address, connect, disconnect } = useEthContext()
+
   const { isMobile } = useUiSidebar()
+
+  const UserAvatar = () => {
+    if (!address) {
+      return (
+        <UiAvatar className='h-8 w-8 rounded-lg'>
+          <UiAvatarImage asChild></UiAvatarImage>
+          <UiAvatarFallback className='rounded-lg'>CN</UiAvatarFallback>
+        </UiAvatar>
+      )
+    }
+
+    return (
+      <Avatar
+        name={address}
+        size={32}
+        colors={[
+          'var(--chart-1)',
+          'var(--chart-2)',
+          'var(--chart-3)',
+          'var(--chart-4)',
+          'var(--chart-5)',
+        ]}
+      />
+    )
+  }
+
+  const UserInitials = () => {
+    if (!address) {
+      return (
+        <div className='grid flex-1 text-left text-sm leading-tight'>
+          <span className='truncate font-medium'>Connect your wallet</span>
+        </div>
+      )
+    }
+
+    return (
+      <div className='grid flex-1 text-left text-sm leading-tight'>
+        <span className='truncate font-medium'>address</span>
+        <span className='truncate text-xs'>{address}</span>
+      </div>
+    )
+  }
 
   return (
     <UiSidebarMenu>
@@ -46,14 +85,8 @@ export function NavUser({
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <UiAvatar className='h-8 w-8 rounded-lg'>
-                <UiAvatarImage src={user.avatar} alt={user.name} />
-                <UiAvatarFallback className='rounded-lg'>CN</UiAvatarFallback>
-              </UiAvatar>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-medium'>{user.name}</span>
-                <span className='truncate text-xs'>{user.email}</span>
-              </div>
+              <UserAvatar />
+              <UserInitials />
               <ChevronsUpDown className='ml-auto size-4' />
             </UiSidebarMenuButton>
           </UiDropdownMenuTrigger>
@@ -65,43 +98,47 @@ export function NavUser({
           >
             <UiDropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
-                <UiAvatar className='h-8 w-8 rounded-lg'>
-                  <UiAvatarImage src={user.avatar} alt={user.name} />
-                  <UiAvatarFallback className='rounded-lg'>CN</UiAvatarFallback>
-                </UiAvatar>
-                <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-medium'>{user.name}</span>
-                  <span className='truncate text-xs'>{user.email}</span>
-                </div>
+                <UserAvatar />
+                <UserInitials />
               </div>
             </UiDropdownMenuLabel>
             <UiDropdownMenuSeparator />
-            <UiDropdownMenuGroup>
-              <UiDropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+
+            {address ? (
+              <>
+                <UiDropdownMenuGroup>
+                  <UiDropdownMenuItem>
+                    <Sparkles />
+                    Upgrade to Pro
+                  </UiDropdownMenuItem>
+                </UiDropdownMenuGroup>
+                <UiDropdownMenuSeparator />
+                <UiDropdownMenuGroup>
+                  <UiDropdownMenuItem>
+                    <BadgeCheck />
+                    Account
+                  </UiDropdownMenuItem>
+                  <UiDropdownMenuItem>
+                    <CreditCard />
+                    Billing
+                  </UiDropdownMenuItem>
+                  <UiDropdownMenuItem>
+                    <Bell />
+                    Notifications
+                  </UiDropdownMenuItem>
+                </UiDropdownMenuGroup>
+                <UiDropdownMenuSeparator />
+                <UiDropdownMenuItem onClick={disconnect}>
+                  <LogOutIcon />
+                  Log out
+                </UiDropdownMenuItem>
+              </>
+            ) : (
+              <UiDropdownMenuItem onClick={connect}>
+                <LogInIcon />
+                Connect
               </UiDropdownMenuItem>
-            </UiDropdownMenuGroup>
-            <UiDropdownMenuSeparator />
-            <UiDropdownMenuGroup>
-              <UiDropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </UiDropdownMenuItem>
-              <UiDropdownMenuItem>
-                <CreditCard />
-                Billing
-              </UiDropdownMenuItem>
-              <UiDropdownMenuItem>
-                <Bell />
-                Notifications
-              </UiDropdownMenuItem>
-            </UiDropdownMenuGroup>
-            <UiDropdownMenuSeparator />
-            <UiDropdownMenuItem>
-              <LogOut />
-              Log out
-            </UiDropdownMenuItem>
+            )}
           </UiDropdownMenuContent>
         </UiDropdownMenu>
       </UiSidebarMenuItem>

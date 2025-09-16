@@ -1,4 +1,4 @@
-import _copy from 'copy-to-clipboard'
+import _copy from 'copy-text-to-clipboard'
 import { useCallback, useState } from 'react'
 
 import { sleep } from '@/helpers'

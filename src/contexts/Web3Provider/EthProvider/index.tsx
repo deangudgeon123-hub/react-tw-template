@@ -199,9 +199,7 @@ export const EthProviderContent = (props: PropsWithChildren) => {
         signAndSendTransaction,
       }}
     >
-      <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-        {props.children}
-      </WagmiProvider>
+      {props.children}
     </ethContext.Provider>
   )
 }

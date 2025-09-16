@@ -2,14 +2,11 @@
   "name": "react-tw-template",
   "private": true,
   "version": "0.0.0",
-  "gitHooks": {
-    "pre-commit": "yarn lint && yarn type-check && yarn format"
-  },
   "scripts": {
     "build": "vite build",
     "start": "vite",
     "analyze": "vite build --mode analyze",
-    "lint": "yarn lint:scripts && yarn lint:locales",
+    "lint": "pnpm lint:scripts && pnpm lint:locales",
     "lint:scripts": "eslint \"{src,config}/**/*.{js,ts,jsx,tsx}\" --cache --cache-location 'node_modules/.cache/.eslintcache' --fix --max-warnings=0",
     "lint:locales": "eslint src/localization/resources/*.json --cache --cache-location 'node_modules/.cache/.eslintcache' --fix --max-warnings=0",
     "format": "prettier . --check --cache --cache-location='node_modules/.cache/.prettiercache'",
@@ -48,6 +45,8 @@
     "@reown/appkit-adapter-bitcoin": "1.7.20",
     "@reown/appkit-adapter-solana": "1.7.20",
     "@reown/appkit-adapter-wagmi": "1.7.20",
+    "@reown/appkit-common": "^1.8.6",
+    "@reown/appkit-controllers": "^1.8.6",
     "@tanstack/react-query": "^5.85.5",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.11.0",
@@ -55,6 +54,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "copy-text-to-clipboard": "^3.2.1",
+    "dayjs": "^1.11.18",
     "embla-carousel-react": "^8.6.0",
     "emittery": "^1.2.0",
     "ethers": "^6.15.0",
@@ -122,6 +123,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.2.0",
     "globals": "^16.3.0",
+    "lefthook": "^1.13.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
@@ -135,8 +137,15 @@
     "vite-plugin-checker": "^0.10.2",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vite-tsconfig-paths": "^5.1.4",
-    "yorkie": "^2.0.0"
+    "vite-tsconfig-paths": "^5.1.4"
   },
-  "packageManager": "yarn@4.9.2"
+  "overrides": {
+    "chalk": "5.3.0",
+    "strip-ansi": "7.1.0",
+    "color-convert": "2.0.1",
+    "color-name": "1.1.4",
+    "is-core-module": "2.13.1",
+    "error-ex": "1.3.2",
+    "has-ansi": "5.0.1"
+  }
 }

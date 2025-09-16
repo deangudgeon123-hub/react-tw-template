@@ -79,7 +79,7 @@ export default tseslint.config(
     rules: {
       'no-unused-vars': 'off',
       'import/no-dynamic-require': 'warn',
-      'import/no-nodejs-modules': 'warn',
+      'import/no-nodejs-modules': 'off',
 
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',

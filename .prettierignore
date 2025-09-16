@@ -3,6 +3,7 @@ dist
 coverage
 .eslintcache
 yarn.lock
+pnpm-lock.yaml
 scripts/*.js
 index.html
 *.md

@@ -34,7 +34,6 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-name: Deploy Vite site to Pages
 on:
   push:
     branches: [main]

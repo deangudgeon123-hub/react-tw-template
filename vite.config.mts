@@ -1,5 +1,4 @@
 import react from '@vitejs/plugin-react'
-
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
@@ -12,34 +11,37 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // const isProduction = mode === 'production'
   const isDevelopment = mode === 'development'
   const isAnalyze = mode === 'analyze'
 
-  // const buildVersion = env.VITE_APP_BUILD_VERSION
-
   return {
+    // 👇👇 REQUIRED FOR GITHUB PAGES 👇👇
+    base: '/react-tw-template/', // <-- change this to '/aegis-wallet/' if you rename repo
+
     server: {
       sourcemapIgnoreList: false,
     },
+
     plugins: [
       react(),
-      // Custom plugin to load markdown files
+
+      // Markdown loader (keeps .md imports working)
       {
         name: 'markdown-loader',
         transform(code, id) {
           if (id.slice(-3) === '.md') {
-            // For .md files, get the raw content
             return `export default ${JSON.stringify(code)};`
           }
         },
       },
 
       tsconfigPaths(),
+
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: '[name]',
       }),
+
       ...(isDevelopment
         ? [
             checker({
@@ -54,6 +56,7 @@ export default defineConfig(({ mode }) => {
             }),
           ]
         : []),
+
       ...(isAnalyze
         ? [
             visualizer({
@@ -62,27 +65,26 @@ export default defineConfig(({ mode }) => {
           ]
         : []),
 
-      // Enable rollup polyfills plugin
-      // used during production bundling
       nodePolyfills({
         globals: {
-          Buffer: true, // can also be 'build', 'dev', or false
+          Buffer: true,
           global: true,
           process: true,
         },
       }),
     ],
+
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
       dedupe: ['react', 'lodash'],
     },
+
     optimizeDeps: {
       esbuildOptions: {
         define: {
           global: 'globalThis',
         },
       },
-      // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
           process: true,
@@ -91,6 +93,7 @@ export default defineConfig(({ mode }) => {
         NodeModulesPolyfillPlugin(),
       ],
     },
+
     build: {
       target: 'esnext',
       sourcemap: true,
@@ -104,19 +107,10 @@ export default defineConfig(({ mode }) => {
                 .split('/')[0]
                 .toString()
             }
-            // Handle specific web3 libraries as separate chunks
-            if (id.includes('@web3modal/siwe')) {
-              return 'web3modal-siwe'
-            }
-            if (id.includes('@walletconnect/modal')) {
-              return 'walletconnect-modal'
-            }
-            if (id.includes('@metamask/sdk')) {
-              return 'metamask-sdk'
-            }
-            if (id.includes('@coinbase/wallet-sdk')) {
-              return 'coinbase-wallet-sdk'
-            }
+            if (id.includes('@web3modal/siwe')) return 'web3modal-siwe'
+            if (id.includes('@walletconnect/modal')) return 'walletconnect-modal'
+            if (id.includes('@metamask/sdk')) return 'metamask-sdk'
+            if (id.includes('@coinbase/wallet-sdk')) return 'coinbase-wallet-sdk'
           },
         },
         plugins: [
@@ -125,11 +119,9 @@ export default defineConfig(({ mode }) => {
             buffer: true,
           }),
           NodeModulesPolyfillPlugin(),
-          // Enable rollup polyfills plugin
-          // used during production bundling
           nodePolyfills({
             globals: {
-              Buffer: true, // can also be 'build', 'dev', or false
+              Buffer: true,
               global: true,
               process: true,
             },

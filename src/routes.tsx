@@ -9,12 +9,12 @@ export enum RoutePaths {
   Auth = '/auth',
 }
 
-// ✅ Lazy load your pages
+// ✅ Lazy load pages (matching your structure exactly)
 const AppPage = lazy(() => import('@/pages/App'))
 const Dashboard = lazy(() => import('@/pages/App/pages/Dashboard'))
 const Auth = lazy(() => import('@/pages/Auth'))
 
-// ✅ Create router with GitHub Pages basename + fallback route
+// ✅ Create router with GitHub Pages basename + 404 fallback
 export const createRouter = () =>
   createBrowserRouter(
     [
@@ -72,6 +72,6 @@ export const createRouter = () =>
       },
     ],
     {
-      basename: '/react-tw-template', // 👈 Required for GitHub Pages
+      basename: '/react-tw-template', // 👈 required for GitHub Pages
     },
   )

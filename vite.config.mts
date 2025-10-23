@@ -15,8 +15,9 @@ export default defineConfig(({ mode }) => {
   const isAnalyze = mode === 'analyze'
 
   return {
-    // 👇👇 REQUIRED FOR GITHUB PAGES 👇👇
-    base: '/react-tw-template/', // <-- change this to '/aegis-wallet/' if you rename repo
+    // ✅ REQUIRED FOR GITHUB PAGES DEPLOYMENT
+    // change this if you rename your repo later
+    base: '/react-tw-template/',
 
     server: {
       sourcemapIgnoreList: false,

@@ -18,10 +18,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Clean install
+      - name: Clean and install dependencies (ignore overrides)
         run: |
           rm -rf node_modules package-lock.json
-          npm install --legacy-peer-deps --force --omit=optional --no-audit || true
+          npm config set legacy-peer-deps true
+          npm config set override false
+          npm install --force --omit=optional --no-audit || true
+          npx vite --version || echo "⚠️ Vite not found after install"
 
       - name: Build project
         run: |

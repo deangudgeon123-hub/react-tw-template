@@ -11,7 +11,7 @@ export enum RoutePaths {
 
 // ✅ Lazy load your pages
 const AppPage = lazy(() => import('@/pages/App'))
-const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const Dashboard = lazy(() => import('@/pages/App/pages/Dashboard'))
 const Auth = lazy(() => import('@/pages/Auth'))
 
 // ✅ Create router with GitHub Pages basename + fallback route

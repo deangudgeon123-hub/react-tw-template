@@ -97,6 +97,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'esnext',
       sourcemap: true,
+      outDir: 'dist',
       rollupOptions: {
         output: {
           manualChunks(id) {

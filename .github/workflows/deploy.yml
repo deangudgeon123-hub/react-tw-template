@@ -18,16 +18,22 @@ jobs:
         with:
           node-version: 20
 
-      - name: Clean and install dependencies (ignore overrides safely)
+      - name: Patch package.json to remove overrides temporarily
+        run: |
+          if grep -q '"overrides"' package.json; then
+            echo "Removing overrides from package.json for CI build..."
+            jq 'del(.overrides)' package.json > package.tmp.json && mv package.tmp.json package.json
+          fi
+
+      - name: Clean and install dependencies
         run: |
           rm -rf node_modules package-lock.json
-          npm config set legacy-peer-deps true
-          npm install --force --omit=optional --no-audit || true
+          npm install --legacy-peer-deps --omit=optional --no-audit
           npx vite --version || echo "⚠️ Vite not found after install"
 
       - name: Build project
         run: |
-          npm run build || npx vite build || echo "⚠️ Build step skipped"
+          npm run build || npx vite build
           echo "✅ Build complete"
 
       - name: Verify dist folder

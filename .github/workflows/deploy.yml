@@ -18,21 +18,25 @@ jobs:
         with:
           node-version: 20
 
-      - name: Clean install (nuke overrides completely)
+      - name: Clean install
         run: |
           rm -rf node_modules package-lock.json
-          npm config set legacy-peer-deps true
-          npm config set force true
-          npm config set strict-peer-deps false
-          npm install --omit=optional --no-audit || true
-
-      - name: Verify Vite (ignore version check)
-        run: npx vite --version || true
+          npm install --legacy-peer-deps --force --omit=optional --no-audit || true
 
       - name: Build project
-        run: npm run build || npx vite build || true
+        run: |
+          npm run build || npx vite build
+          echo "✅ Build complete"
+
+      - name: Verify dist folder
+        run: |
+          echo "Contents of project root:"
+          ls -la
+          echo "Contents of dist folder:"
+          ls -la dist || echo "⚠️ dist folder not found"
 
       - name: Upload build output
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
